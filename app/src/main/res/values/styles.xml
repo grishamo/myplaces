@@ -18,4 +18,13 @@
         <item name="android:padding">10dp</item>
     </style>
 
+    <style name="Tabs">
+        <item name="android:background">#2b3133</item>
+        <item name="android:color">#ffffff</item>
+    </style>
+
+    <style name="NoHeader.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="NoHeader.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>
