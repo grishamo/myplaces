@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomTextView">
+        <attr name="fontFace" format="string" />
+    </declare-styleable>
+
+<!--    <declare-styleable name="PlaceItemView">
+        <attr name="placeTitle" format="string" localization="suggested" />
+        <attr name="placeDescription" format="string" localization="suggested" />
+        <attr name="placeImage" format="string" />
+        <attr name="placeId" format="integer" />
+    </declare-styleable>-->
+
+</resources>

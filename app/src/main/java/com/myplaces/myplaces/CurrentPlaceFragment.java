@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback, IPageFragment {
 
     private GoogleMap mMap;
-    private int mPageIcon = R.drawable.logo;
+    private int mPageIcon = R.drawable.ic_location_on_black_24dp;
     private String mTitle = "Current Location";
 
     public CurrentPlaceFragment() {
