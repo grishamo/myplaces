@@ -6,18 +6,49 @@
     android:orientation="vertical">
 
     <EditText
+        android:id="@+id/location_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_location_on_grey_24dp"/>
+        android:drawableStart="@drawable/ic_location_on_grey_24dp"
+        android:drawableEnd="@drawable/ic_search_black_24dp"
+        android:hint="@string/location_hint"
+        android:layout_margin="10dp"/>
+
+    <EditText
+        android:id="@+id/title_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_border_color_black_24dp"
+        android:hint="@string/title_hint"
+        android:layout_margin="10dp"
+        />
+
+    <ImageButton
+        android:id="@+id/add_image_ib"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:src="@drawable/ic_add_a_photo_black_24dp"
+        />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_border_color_black_24dp"
-        />
+        android:drawableStart="@drawable/ic_description_black_24dp"
+        android:layout_margin="10dp"/>
+
     <Button
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        />
+        android:id="@+id/add_more_details_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/more_details"
+        android:drawableStart="@drawable/ic_more_horiz_black_24dp"/>
+
+    <Button
+        android:id="@+id/save_place_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/save_place_txt"
+        android:layout_margin="20dp"/>
 
 </LinearLayout>
