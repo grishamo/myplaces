@@ -1,24 +1,31 @@
 package com.myplaces.myplaces;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import com.google.android.gms.location.places.Place;
 
-public class MyPlace
+import java.io.IOException;
+import java.io.Serializable;
+
+public class MyPlace implements Serializable
 {
     private String title;
     private String description;
     private String location;
     private String category;
     private String phoneNumber;
-    private Uri webURL;
-    private Place googlePlace;
+    private Bitmap photo;
+    private String webURL;
+    //private Place googlePlace;
 
-    public MyPlace(String title, String description, String location)
+    public MyPlace(String title, String description, String location, Bitmap photo)
     {
         this.title = title;
         this.description = description;
         this.location = location;
+        this.photo = photo;
     }
 
     public MyPlace(Place googlePlaceObj)
@@ -26,9 +33,9 @@ public class MyPlace
         this.title = googlePlaceObj.getName().toString();
         this.location = googlePlaceObj.getAddress().toString();
         this.phoneNumber = googlePlaceObj.getPhoneNumber().toString();
-        this.googlePlace = googlePlaceObj;
+       // this.googlePlace = googlePlaceObj;
         // Got an GetPath methods..
-        this.webURL = googlePlaceObj.getWebsiteUri();
+        this.webURL = googlePlaceObj.getWebsiteUri().getPath();
 
     }
 
@@ -73,6 +80,16 @@ public class MyPlace
         this.phoneNumber = phoneNumber;
     }
 
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException
+    {
+        photo.compress(Bitmap.CompressFormat.JPEG,50, out);
+        out.defaultWriteObject();
+    }
 
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        photo = BitmapFactory.decodeStream(in);
+        in.defaultReadObject();
+    }
 
 }
