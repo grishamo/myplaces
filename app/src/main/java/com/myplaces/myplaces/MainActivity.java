@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity
         tabLayout.setupWithViewPager(viewPager);
         adapter.SetTabsIcon();
 
-        AppManager.getInstance()
+        AppManager.getInstance();
 
     }
 
