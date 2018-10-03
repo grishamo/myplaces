@@ -2,9 +2,7 @@ package com.myplaces.myplaces;
 
 import android.content.Intent;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -16,12 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Button;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -34,8 +30,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +53,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
 
     Button mSavePlace_btn;
     RecyclerView recyclerView;
-    List<MyPlaces> myPlacesList;
+    List<MyPlace> myPlacesList;
     PlaceAdapter placeAdapter;
     ImageButton takePic_btn;
     ImageView takenPicture_iv;
@@ -124,16 +118,16 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         myPlacesList = new ArrayList<>();
-        myPlacesList.add(new MyPlaces("Bars", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("Rest", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("Hotel", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("Brothel", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("Custom", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("asd", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("Cusagdsfhdtom", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("argfgbvhn", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("w45ergd", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("4w56tertesr", "bla", "bla"));
+        myPlacesList.add(new MyPlace("Bars", "bla", "bla"));
+        myPlacesList.add(new MyPlace("Rest", "bla", "bla"));
+        myPlacesList.add(new MyPlace("Hotel", "bla", "bla"));
+        myPlacesList.add(new MyPlace("Brothel", "bla", "bla"));
+        myPlacesList.add(new MyPlace("Custom", "bla", "bla"));
+        myPlacesList.add(new MyPlace("asd", "bla", "bla"));
+        myPlacesList.add(new MyPlace("Cusagdsfhdtom", "bla", "bla"));
+        myPlacesList.add(new MyPlace("argfgbvhn", "bla", "bla"));
+        myPlacesList.add(new MyPlace("w45ergd", "bla", "bla"));
+        myPlacesList.add(new MyPlace("4w56tertesr", "bla", "bla"));
 
         placeAdapter = new PlaceAdapter(myPlacesList);
         recyclerView.setAdapter(placeAdapter);

@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 
@@ -23,7 +22,7 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
     private int mPageIcon = R.drawable.ic_location_on_black_24dp;
     private String mTitle = "My Places :)";
     private ListView placesListView;
-    private ArrayList<MyPlaces> myPlacesArrayList = new ArrayList<>();
+    private ArrayList<MyPlace> myPlacesArrayList = new ArrayList<>();
     private View rootView;
     private Spinner cityDropDown;
     private Spinner categoryDropDown;
@@ -55,18 +54,18 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
         });
 
 
-        myPlacesArrayList.add(new MyPlaces("Lol","ROFL","STFU BITCH"));
-        myPlacesArrayList.add(new MyPlaces("HAHAHAHA","SDSDAS","STFU SDASDA"));
-        myPlacesArrayList.add(new MyPlaces("LCCCol","RORRRFL","STFU WWWW"));
-        myPlacesArrayList.add(new MyPlaces("Lol","ROFL","STFU BITCH"));
-        myPlacesArrayList.add(new MyPlaces("HAHAHAHA","SDSDAS","STFU SDASDA"));
-        myPlacesArrayList.add(new MyPlaces("LCCCol","RORRRFL","STFU WWWW"));
-        myPlacesArrayList.add(new MyPlaces("Lol","ROFL","STFU BITCH"));
-        myPlacesArrayList.add(new MyPlaces("HAHAHAHA","SDSDAS","STFU SDASDA"));
-        myPlacesArrayList.add(new MyPlaces("LCCCol","RORRRFL","STFU WWWW"));
-        myPlacesArrayList.add(new MyPlaces("Lol","ROFL","STFU BITCH"));
-        myPlacesArrayList.add(new MyPlaces("HAHAHAHA","SDSDAS","STFU SDASDA"));
-        myPlacesArrayList.add(new MyPlaces("LCCCol","RORRRFL","STFU WWWW"));
+        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
+        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
+        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
+        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
+        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
+        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
+        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
+        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
+        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
+        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
+        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
+        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
         MyPlacesCustomAdapter mpca = new MyPlacesCustomAdapter(myPlacesArrayList, getActivity());
         placesListView.setAdapter(mpca);
 

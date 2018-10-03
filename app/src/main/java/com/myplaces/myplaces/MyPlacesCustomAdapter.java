@@ -5,19 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 public class MyPlacesCustomAdapter extends BaseAdapter
 {
-    private List<MyPlaces> places;
+    private List<MyPlace> places;
     private Context context;
 
-    public MyPlacesCustomAdapter(List<MyPlaces> places, Context context) {
+    public MyPlacesCustomAdapter(List<MyPlace> places, Context context) {
         this.places = places;
         this.context = context;
     }
@@ -45,7 +42,7 @@ public class MyPlacesCustomAdapter extends BaseAdapter
             view = layoutInflater.inflate(R.layout.myplaces_cell, viewGroup, false);
         }
 
-        MyPlaces place = places.get(i);
+        MyPlace place = places.get(i);
 
         TextView title = view.findViewById(R.id.place_name);
         TextView location = view.findViewById(R.id.location_name);

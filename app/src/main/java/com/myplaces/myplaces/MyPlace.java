@@ -1,17 +1,24 @@
 package com.myplaces.myplaces;
 
-public class MyPlaces
+import com.google.android.gms.location.places.Place;
+
+public class MyPlace
 {
     private String title;
     private String description;
     private String location;
     private String category;
 
-    public MyPlaces(String title, String description, String location)
+    public MyPlace(String title, String description, String location)
     {
         this.title = title;
         this.description = description;
         this.location = location;
+    }
+
+    public MyPlace()
+    {
+
     }
 
     public String getTitle() {

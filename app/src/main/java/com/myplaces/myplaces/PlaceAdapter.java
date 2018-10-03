@@ -11,9 +11,9 @@ import java.util.List;
 
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHolder>{
 
-    private List<MyPlaces> places;
+    private List<MyPlace> places;
 
-    public PlaceAdapter(List<MyPlaces> places) {
+    public PlaceAdapter(List<MyPlace> places) {
         this.places = places;
     }
 
@@ -38,7 +38,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
 
     @Override
     public void onBindViewHolder(@NonNull PlaceViewHolder holder, int position) {
-        MyPlaces myPlaces = places.get(position);
+        MyPlace myPlaces = places.get(position);
         holder.categoryTv.setText(myPlaces.getTitle());
     }
 
