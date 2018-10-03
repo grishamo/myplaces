@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:layoutDirection="locale"
+xmlns:android="http://schemas.android.com/apk/res/android">
+
+<ImageView
+    android:layout_width="120dp"
+    android:layout_height="120dp"
+    android:src="@drawable/ic_launcher_background"
+    android:id="@+id/place_img"/>
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:layout_toEndOf="@id/place_img"
+    android:orientation="vertical"
+    android:id="@+id/place_info_internallayout"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_weight="2"
+        android:textStyle="bold"
+        android:text="The Atlnatic Ocean Lol"
+        android:textColor="@android:color/black"
+        android:id="@+id/place_name"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/place_name"
+        android:layout_weight="4"
+        android:textColor="@android:color/black"
+        android:text="ROFL sadkasjdklasjdkasldjaslkdasjdksldksldksldsldksldksldksldksldskldskldskldksl"
+        android:id="@+id/place_description"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/place_name"
+            android:src="@drawable/ic_location_on_grey_24dp"
+            android:id="@+id/place_little_logo"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="Delhi"
+            android:textColor="@android:color/black"
+            android:id="@+id/location_name"/>
+
+    </LinearLayout>
+
+</LinearLayout>
+
+
+</RelativeLayout>
