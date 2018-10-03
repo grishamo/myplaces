@@ -1,5 +1,7 @@
 package com.myplaces.myplaces;
 
+import android.net.Uri;
+
 import com.google.android.gms.location.places.Place;
 
 public class MyPlace
@@ -8,6 +10,9 @@ public class MyPlace
     private String description;
     private String location;
     private String category;
+    private String phoneNumber;
+    private Uri webURL;
+    private Place googlePlace;
 
     public MyPlace(String title, String description, String location)
     {
@@ -16,8 +21,14 @@ public class MyPlace
         this.location = location;
     }
 
-    public MyPlace()
+    public MyPlace(Place googlePlaceObj)
     {
+        this.title = googlePlaceObj.getName().toString();
+        this.location = googlePlaceObj.getAddress().toString();
+        this.phoneNumber = googlePlaceObj.getPhoneNumber().toString();
+        this.googlePlace = googlePlaceObj;
+        // Got an GetPath methods..
+        this.webURL = googlePlaceObj.getWebsiteUri();
 
     }
 
@@ -28,7 +39,6 @@ public class MyPlace
     public void setTitle(String title) {
         this.title = title;
     }
-
 
     public String getDescription() {
         return this.description;
@@ -53,6 +63,14 @@ public class MyPlace
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
 

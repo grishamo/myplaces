@@ -18,8 +18,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         // Find the view pager that will allow the user to swipe between fragments
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
@@ -28,7 +26,6 @@ public class MainActivity extends AppCompatActivity
 
         // Create an adapter that knows which fragment should be shown on each page
         SimpleFragmentPagerAdapter adapter = new SimpleFragmentPagerAdapter(this, getSupportFragmentManager(), tabLayout);
-
 
 
         // Add Page Fragment to adapter
@@ -42,6 +39,8 @@ public class MainActivity extends AppCompatActivity
         // Give the TabLayout the ViewPager
         tabLayout.setupWithViewPager(viewPager);
         adapter.SetTabsIcon();
+
+        AppManager.getInstance()
 
     }
 
