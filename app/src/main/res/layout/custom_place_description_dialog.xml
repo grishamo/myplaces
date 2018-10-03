@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -9,46 +8,58 @@
         android:id="@+id/location_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:drawableStart="@drawable/ic_location_on_grey_24dp"
         android:drawableEnd="@drawable/ic_search_black_24dp"
-        android:hint="@string/location_hint"
-        android:layout_margin="10dp"/>
+        android:hint="@string/location_hint" />
 
     <EditText
         android:id="@+id/title_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_border_color_black_24dp"
-        android:hint="@string/title_hint"
         android:layout_margin="10dp"
-        />
+        android:drawableStart="@drawable/ic_border_color_black_24dp"
+        android:hint="@string/title_hint" />
 
-    <ImageButton
-        android:id="@+id/add_image_ib"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:src="@drawable/ic_add_a_photo_black_24dp"
-        />
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/images_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/add_image_ib"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_toEndOf="@+id/taken_picture_iv"
+                android:src="@drawable/ic_add_a_photo_black_24dp" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_description_black_24dp"
-        android:layout_margin="10dp"/>
+        android:layout_margin="10dp"
+        android:drawableStart="@drawable/ic_description_black_24dp" />
 
     <Button
         android:id="@+id/add_more_details_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/more_details"
-        android:drawableStart="@drawable/ic_more_horiz_black_24dp"/>
+        android:drawableStart="@drawable/ic_more_horiz_black_24dp"
+        android:text="@string/more_details" />
 
     <Button
         android:id="@+id/save_place_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/save_place_txt"
-        android:layout_margin="20dp"/>
+        android:layout_margin="20dp"
+        android:text="@string/save_place_txt" />
 
 </LinearLayout>
