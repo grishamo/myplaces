@@ -27,8 +27,9 @@
         android:hint="Untitled" />
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/category_tv"
             android:layout_width="wrap_content"
@@ -37,61 +38,65 @@
             android:text="Category:"
             android:drawableStart="@drawable/ic_format_list_bulleted_black_24dp"/>
 
-        <TextView
-            android:id="@+id/choosen_category_tv"
-            android:layout_width="match_parent"
+        <Spinner
+            android:id="@+id/choosen_category_spinner"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/category_tv"
-            android:hint="Choose category from list"
-            android:layout_marginTop="10dp"
-            />
+            android:layout_toEndOf="@id/category_tv" />
 
-    <android.support.v7.widget.RecyclerView
+        <ImageButton
+            android:id="@+id/add_new_category_btn"
+            android:layout_toEndOf="@+id/choosen_category_spinner"
+            android:layout_marginStart="5dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/ic_add_circle_main_color_24dp"/>
+
+<!--    <android.support.v7.widget.RecyclerView
         android:id="@+id/categories_recycler"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_margin="10dp"
-        android:layout_below="@+id/category_tv"/>
+        android:layout_below="@+id/category_tv"/>-->
 
     </RelativeLayout>
 
-<!--    <view class="android.support.v7.app.AlertController$RecycleListView"
-        android:layout_width="match_parent"
-        android:layout_height="120dp">
-
-    </view>-->
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal">
 
-        <Button
+        <ImageButton
             android:id="@+id/edit_description_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="edit" />
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:background="@drawable/popup_edit_btn"
+            android:src="@drawable/ic_edit_main_color_24dp"
+            android:layout_marginStart="30dp"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/share_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/edit_description_btn"
-            android:layout_marginStart="50dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:background="@drawable/popup_share_btn"
+            android:src="@drawable/ic_share_main_color_24dp"
+            android:layout_marginStart="70dp"
             android:text="share" />
-
-<!--        <ImageView
-            style="@style/PlaceButtonStyle"
-            android:src="@drawable/ic_share_black_24dp"/>-->
 
         <Button
             android:id="@+id/save_btn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="10dp"
             android:layout_toEndOf="@id/share_btn"
+            android:background="@drawable/main_button_background"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:text="save"
-            />
+            android:textColor="#ffffff" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

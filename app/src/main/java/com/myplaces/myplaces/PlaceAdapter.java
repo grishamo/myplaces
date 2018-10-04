@@ -31,14 +31,11 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
     public class PlaceViewHolder extends RecyclerView.ViewHolder{
 
         TextView categoryTv;
-        TextView choosenCategoryTv;
-
 
         public PlaceViewHolder(View itemView) {
             super(itemView);
 
             categoryTv = itemView.findViewById(R.id.place_category_tv);
-            choosenCategoryTv = itemView.findViewById(R.id.choosen_category_tv);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
