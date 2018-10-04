@@ -39,6 +39,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
+import com.google.android.gms.location.places.PlacePhotoResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -82,6 +86,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
     private Geocoder geocoder;
+    private GeoDataClient mGeoDataClient;
     private Location mLastKnownLocation;
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private Marker placeMarker;
@@ -118,6 +123,8 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mGeoDataClient = Places.getGeoDataClient(getActivity(), null);
 
         initSearchPlaceBtn();
         initSavePlaceBtn();
@@ -217,7 +224,8 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                             mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
 
-                        SetCurrentLocationText(locationLatLng);
+                        myPlace = new MyPlace(getPlaceAddress(locationLatLng));
+                        SetCurrentLocationText(getPlaceAddress(locationLatLng));
                         SetMarkerPosition(locationLatLng);
                         ChangeCameraPosition(locationLatLng);
                     }
@@ -245,19 +253,24 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         });
     }
 
-    private void SetCurrentLocationText(LatLng latLng) {
-        if (latLng != null) {
-            try {
-                List<Address>addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                String address = addresses.get(0).getAddressLine(0);
-                String city = addresses.get(0).getLocality();
-                String country = addresses.get(0).getCountryName();
+    private void SetCurrentLocationText(Address address) {
+        if (address != null) {
+            String fullAddress = address.getAddressLine(0);
+            String city = address.getLocality();
+            String country = address.getCountryName();
 
-                mCurrentLocationTextView.setText(address.split(",")[0]);
-                mCurrentLocationCountryCity.setText(city + ", " + country);
-            } catch (IOException e) {
-                Log.e("Exception: %s", e.getMessage());
-            }
+            mCurrentLocationTextView.setText(fullAddress.split(",")[0]);
+            mCurrentLocationCountryCity.setText(city + ", " + country);
+        }
+    }
+
+    private Address getPlaceAddress(LatLng latLng) {
+        try {
+            List<Address>addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            return addresses.get(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -399,7 +412,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(getContext(), data);
-                SetCurrentLocationText(place.getLatLng());
+                SetCurrentLocationText(getPlaceAddress(place.getLatLng()));
                 ChangeMarkerPosition(place.getLatLng());
                 Log.i(mTitle, "Place: " + place.getAddress());
                 myPlace = new MyPlace(place);
@@ -419,4 +432,32 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
             takenPicture_iv.setImageBitmap(bitmap);
         }
     }
+
+    // Request photos and metadata for the specified place.
+    private void getPhotos(String placeId ) {
+        final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(placeId);
+        photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
+                // Get the list of photos.
+                PlacePhotoMetadataResponse photos = task.getResult();
+                // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
+                PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                // Get the first photo in the list.
+                PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
+                // Get the attribution text.
+                CharSequence attribution = photoMetadata.getAttributions();
+                // Get a full-size bitmap for the photo.
+                Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+                photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+                        PlacePhotoResponse photo = task.getResult();
+                        Bitmap bitmap = photo.getBitmap();
+                    }
+                });
+            }
+        });
+    }
+
 }
