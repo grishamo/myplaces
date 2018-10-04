@@ -1,13 +1,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/SearchPlaceBtn"
         android:layout_width="wrap_content"
-        android:text="Search Place"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/search_places_background"
+        android:drawableStart="@drawable/zoom_icon"
+        android:paddingEnd="40dp"
+        android:paddingStart="40dp"
+        android:text="@string/search_address_and_places"
+        android:textAllCaps="false"
+        android:textColor="#c1ffffff"
+        android:textSize="13sp" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -18,10 +27,52 @@
         android:layout_height="match_parent"
         tools:context=".CurrentPlaceFragment" />
 
-    <Button
-        android:id="@+id/save_place_popup_btn"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/save_place_txt" />
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/place_info_background"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:id="@+id/EditPlaceBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/CurrentLocationAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/edit_icon"
+                android:drawablePadding="10dp"
+                android:textAlignment="center"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/CurrentLocationCountryCity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="#71000000"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/save_place_popup_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/main_button_background"
+            android:paddingEnd="40dp"
+            android:paddingStart="40dp"
+            android:text="@string/save_place_txt"
+            android:textColor="#ffffff" />
+
+    </LinearLayout>
 
 </RelativeLayout>
