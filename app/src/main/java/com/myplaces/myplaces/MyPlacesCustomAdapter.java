@@ -49,7 +49,7 @@ public class MyPlacesCustomAdapter extends BaseAdapter
         TextView description = view.findViewById(R.id.place_description);
 
         title.setText(place.getTitle());
-        location.setText(place.getLocation());
+        location.setText(place.getCity());
         description.setText(place.getDescription());
 
         return view;

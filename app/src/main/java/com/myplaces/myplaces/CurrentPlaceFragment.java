@@ -249,9 +249,9 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         if (latLng != null) {
             try {
                 List<Address>addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                String address = addresses.get(0).getAddressLine(0);
-                String city = addresses.get(0).getLocality();
-                String country = addresses.get(0).getCountryName();
+                String address = addresses.get(0).getAddressLine(0); // the rest
+                String city = addresses.get(0).getLocality(); // City
+                String country = addresses.get(0).getCountryName(); // country
 
                 mCurrentLocationTextView.setText(address.split(",")[0]);
                 mCurrentLocationCountryCity.setText(city + ", " + country);
@@ -273,7 +273,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         Button saveBtn = dialogView.findViewById(R.id.save_btn);
         choosenCategoryTv = dialogView.findViewById(R.id.choosen_category_tv);
 
-        locationTv.setText(myPlace.getLocation());
+        locationTv.setText(myPlace.getCity());
         placeTitleTv.setText(myPlace.getTitle());
 
         recyclerView = dialogView.findViewById(R.id.categories_recycler);
@@ -297,9 +297,9 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 AppManager.getInstance().getMyPlaces().add(myPlace);
-                AppManager.getInstance().Save(getContext());
 
-                Log.i(mTitle, "ADDDEDDD: " + AppManager.getInstance().getMyPlaces().get(0).getLocation());
+                AppManager.checkForMenusContentsDuplicates(myPlace);
+                AppManager.getInstance().Save(getContext());
             }
         });
 
@@ -320,8 +320,8 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         EditText titleEt = dialogView.findViewById(R.id.title_et);
         EditText descriptionEt = dialogView.findViewById(R.id.description_et);
 
-        locationEt.setText(myPlace.getLocation());
-        myPlace.setLocation(locationEt.getText().toString());
+        locationEt.setText(myPlace.getCity());
+        myPlace.setCity(locationEt.getText().toString());
 
         titleEt.setText(myPlace.getTitle());
         myPlace.setTitle(titleEt.getText().toString());
@@ -402,7 +402,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                 SetCurrentLocationText(place.getLatLng());
                 ChangeMarkerPosition(place.getLatLng());
                 Log.i(mTitle, "Place: " + place.getAddress());
-                myPlace = new MyPlace(place);
+                myPlace = new MyPlace(place,getContext());
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(getContext(), data);
                 // TODO: Handle the error.
