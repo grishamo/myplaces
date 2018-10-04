@@ -91,10 +91,9 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private Marker placeMarker;
 
-    private final int REQUEST_PERMISSION_CAMERA = 2;
     private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 3;
-    private final int DEFAULT_ZOOM = 15;;
+    private final int DEFAULT_ZOOM = 15;
     private MyPlace myPlace;
 
     private TextView mCurrentLocationTextView;
@@ -104,9 +103,6 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     RecyclerView recyclerView;
     List<MyPlace> myPlacesList;
     PlaceAdapter placeAdapter;
-    ImageButton takePic_btn;
-    ImageView takenPicture_iv;
-    LinearLayout linearLayout;
     TextView choosenCategoryTv;
 
     @Override
@@ -128,8 +124,6 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
 
         initSearchPlaceBtn();
         initSavePlaceBtn();
-
-        Log.i(mTitle, "onCreateView");
 
         return rootView;
     }
@@ -286,7 +280,6 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         Button saveBtn = dialogView.findViewById(R.id.save_btn);
         choosenCategoryTv = dialogView.findViewById(R.id.choosen_category_tv);
 
-        locationTv.setText(myPlace.getLocation());
         placeTitleTv.setText(myPlace.getTitle());
 
         recyclerView = dialogView.findViewById(R.id.categories_recycler);
@@ -311,53 +304,20 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
             public void onClick(View v) {
                 AppManager.getInstance().getMyPlaces().add(myPlace);
                 AppManager.getInstance().Save(getContext());
-
-                Log.i(mTitle, "ADDDEDDD: " + AppManager.getInstance().getMyPlaces().get(0).getLocation());
             }
         });
 
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShowEditDialog();
+                EditPlace();
             }
         });
     }
 
-    public void ShowEditDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        final View dialogView = getLayoutInflater().inflate(R.layout.custom_place_description_dialog, null);
-        takePic_btn = dialogView.findViewById(R.id.add_image_ib);
-        EditText locationEt = dialogView.findViewById(R.id.location_et);
-        EditText titleEt = dialogView.findViewById(R.id.title_et);
-        EditText descriptionEt = dialogView.findViewById(R.id.description_et);
-
-        locationEt.setText(myPlace.getLocation());
-        myPlace.setLocation(locationEt.getText().toString());
-
-        titleEt.setText(myPlace.getTitle());
-        myPlace.setTitle(titleEt.getText().toString());
-
-        descriptionEt.setText(myPlace.getDescription());
-        myPlace.setDescription(descriptionEt.getText().toString());
-
-        takePic_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, REQUEST_PERMISSION_CAMERA);
-
-                takenPicture_iv = new ImageView(getContext());
-                linearLayout = dialogView.findViewById(R.id.images_layout);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, ViewGroup.LayoutParams.MATCH_PARENT);
-
-                takenPicture_iv.setLayoutParams(params);
-                linearLayout.addView(takenPicture_iv, 0);
-            }
-        });
-
-        builder.setView(dialogView).show();
+    public void EditPlace() {
+        Intent intent = new Intent(getActivity(), PlaceEditActivity.class);
+        intent.putExtra("myplace", myPlace);
     }
 
     public void ChangeMarkerPosition(LatLng position) {
@@ -425,12 +385,6 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                 // The user canceled the operation.
             }
         }
-        if (requestCode == REQUEST_PERMISSION_CAMERA) {
-            super.onActivityResult(requestCode, resultCode, data);
-
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            takenPicture_iv.setImageBitmap(bitmap);
-        }
     }
 
     // Request photos and metadata for the specified place.
@@ -458,6 +412,10 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                 });
             }
         });
+    }
+
+    private void buildMyPlace(){
+
     }
 
 }

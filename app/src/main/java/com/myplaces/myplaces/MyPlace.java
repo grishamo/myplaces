@@ -17,12 +17,13 @@ import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class MyPlace implements Serializable
 {
     private String title;
     private String description;
-    private String location;
+    private Address location;
     private String category;
     private String phoneNumber;
     private Bitmap photo;
@@ -34,7 +35,6 @@ public class MyPlace implements Serializable
     {
         this.title = title;
         this.description = description;
-        this.location = location;
         this.photo = photo;
     }
 
@@ -43,7 +43,6 @@ public class MyPlace implements Serializable
     }
     public MyPlace(Place googlePlaceObj) {
         this.title = googlePlaceObj.getName().toString();
-        this.location = googlePlaceObj.getAddress().toString();
         this.phoneNumber = googlePlaceObj.getPhoneNumber().toString();
         // this.googlePlace = googlePlaceObj;
         // Got an GetPath methods..
@@ -67,13 +66,12 @@ public class MyPlace implements Serializable
         this.description = description;
     }
 
-
-    public String getLocation() {
+    public Address getAddress() {
         return this.location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public ArrayList<Bitmap> GetAllImages(){
+        return new ArrayList<>();
     }
 
     public String getCategory() {
