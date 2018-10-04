@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.location.Address;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -23,11 +25,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +69,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.Locale;
@@ -269,16 +275,15 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     }
 
     public void ShowSavePlaceDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         final View dialogView = getLayoutInflater().inflate(R.layout.save_place_dialog, null);
         TextView locationTv = dialogView.findViewById(R.id.location_tv);
         TextView placeTitleTv = dialogView.findViewById(R.id.place_title_tv);
         ImageView placeImageIv = dialogView.findViewById(R.id.place_google_iv);
-        Button editBtn = dialogView.findViewById(R.id.edit_description_btn);
-        Button shareBtn = dialogView.findViewById(R.id.share_btn);
+        ImageButton editBtn = dialogView.findViewById(R.id.edit_description_btn);
+        ImageButton shareBtn = dialogView.findViewById(R.id.share_btn);
         Button saveBtn = dialogView.findViewById(R.id.save_btn);
-        choosenCategoryTv = dialogView.findViewById(R.id.choosen_category_tv);
 
         locationTv.setText(myPlace.getCity());
         placeTitleTv.setText(myPlace.getTitle());
@@ -289,8 +294,16 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
             placeImageIv.setImageBitmap(defaultImage);
         }
 
-        recyclerView = dialogView.findViewById(R.id.categories_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        Spinner spinner = dialogView.findViewById(R.id.choosen_category_spinner);
+        SpinnerData spinnerData = new SpinnerData();
+        spinnerData.populate(getActivity(), spinner);
+
+        String selectedCategory = spinnerData.getSelectedItemStr();
+        myPlace.setCategory(selectedCategory);
+
+
+/*        recyclerView = dialogView.findViewById(R.id.categories_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));*//*
 
         myPlacesList = new ArrayList<>();
 
@@ -302,19 +315,30 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                 choosenCategoryTv.setText(myPlacesList.get(position).getTitle());
                 myPlace.setCategory(choosenCategoryTv.getText().toString());
             }
-        });
+        });*/
 
-        builder.setView(dialogView).show();
+        final AlertDialog alertDialog = builder.setView(dialogView).show();
+
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!(AppManager.getInstance().getMyPlaces().contains(myPlace))) {
+                    AppManager.getInstance().getMyPlaces().add(myPlace);
+                    AppManager.getInstance().Save(getContext());
+
+                    Log.i(mTitle, "ADDDEDDD: " + AppManager.getInstance().getMyPlaces().get(0).getLocation());
+                }
+                alertDialog.dismiss();
                 AppManager.getInstance().getMyPlaces().add(myPlace);
 
                 AppManager.checkForMenusContentsDuplicates(myPlace);
                 AppManager.getInstance().Save(getContext());
             }
         });
+
+
+
 
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
