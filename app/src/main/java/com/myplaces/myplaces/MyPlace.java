@@ -37,6 +37,12 @@ public class MyPlace implements Serializable
         // Got an GetPath methods..
         this.webURL = googlePlaceObj.getWebsiteUri().getPath();
 
+    public Uri getWebUri() {
+        return webUri;
+    }
+
+    public void setWebUri(Uri webUri) {
+        this.webUri = webUri;
     }
 
     public String getTitle() {

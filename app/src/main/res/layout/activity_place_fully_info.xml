@@ -101,24 +101,24 @@
             android:padding="10dp"
             android:orientation="horizontal">
 
-            <ImageView
+            <ImageButton
 
                 style="@style/PlaceButtonStyle"
                 android:src="@drawable/ic_phone_black_24dp"/>
 
-            <ImageView
+            <ImageButton
 
                 style="@style/PlaceButtonStyle"
                 android:src="@drawable/ic_public_black_24dp"/>
 
-            <ImageView
+            <ImageButton
                 style="@style/PlaceButtonStyle"
                 android:src="@drawable/ic_share_black_24dp"/>
 
-            <ImageView
+            <ImageButton
 
                 style="@style/PlaceButtonStyle"
-                android:src="@drawable/ic_near_me_black_24dp"/>
+                android:src="@drawable/ic_near_me_black_24dp" />
         </LinearLayout>
 
     </LinearLayout>

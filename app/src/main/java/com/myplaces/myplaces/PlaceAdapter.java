@@ -12,6 +12,17 @@ import java.util.List;
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHolder>{
 
     private List<MyPlace> places;
+    //callback
+    private MyPlaceListener listener;
+
+    interface MyPlaceListener{
+        void onCategoryClick(int position, View view);
+     //   void onCategoryLongClick(int position, View view);
+    }
+
+    public void setListener(MyPlaceListener listener){
+        this.listener = listener;
+    }
 
     public PlaceAdapter(List<MyPlace> places) {
         this.places = places;
@@ -20,11 +31,23 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
     public class PlaceViewHolder extends RecyclerView.ViewHolder{
 
         TextView categoryTv;
+        TextView choosenCategoryTv;
+
 
         public PlaceViewHolder(View itemView) {
             super(itemView);
 
             categoryTv = itemView.findViewById(R.id.place_category_tv);
+            choosenCategoryTv = itemView.findViewById(R.id.choosen_category_tv);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        listener.onCategoryClick(getAdapterPosition(), v);
+                    }
+                }
+            });
         }
     }
 
@@ -38,8 +61,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
 
     @Override
     public void onBindViewHolder(@NonNull PlaceViewHolder holder, int position) {
-        MyPlace myPlaces = places.get(position);
-        holder.categoryTv.setText(myPlaces.getTitle());
+        MyPlace myPlace = places.get(position);
+        holder.categoryTv.setText(myPlace.getTitle());
     }
 
     @Override
@@ -52,3 +75,5 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
         return super.getItemViewType(position);
     }
 }
+
+
