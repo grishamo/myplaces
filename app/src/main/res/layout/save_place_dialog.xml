@@ -40,17 +40,9 @@
 
         <Spinner
             android:id="@+id/choosen_category_spinner"
-            android:layout_width="150dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/category_tv" />
-
-        <ImageButton
-            android:id="@+id/add_new_category_btn"
-            android:layout_toEndOf="@+id/choosen_category_spinner"
-            android:layout_marginStart="5dp"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:background="@drawable/ic_add_circle_main_color_24dp"/>
 
 <!--    <android.support.v7.widget.RecyclerView
         android:id="@+id/categories_recycler"

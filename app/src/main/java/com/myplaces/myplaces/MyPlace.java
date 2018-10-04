@@ -20,12 +20,13 @@ public class MyPlace implements Serializable
     private String webURL;
     //private Place googlePlace;
 
-    public MyPlace(String title, String description, String location, Bitmap photo)
+    public MyPlace(String title, String description, String location, Bitmap photo, String category)
     {
         this.title = title;
         this.description = description;
         this.location = location;
         this.photo = photo;
+        this.category = category;
     }
 
     public MyPlace(Place googlePlaceObj) {

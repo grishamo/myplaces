@@ -1,11 +1,9 @@
 package com.myplaces.myplaces;
 
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,28 +17,30 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomSpinner {
+public class SpinnerData {
+    private List<String> categoriesList;
+    private int spinnerItemId;
+    private String selectedItemStr;
 
-    List<String> categoriesList;
-    int spinnerItemId;
+    public SpinnerData(){
+        categoriesList = new ArrayList<>();
+        categoriesList.add("Select...");
+        categoriesList.add("Add New Category");
 
-   public CustomSpinner(){
-       categoriesList = new ArrayList<>();
-       categoriesList.add("Select...");
-       categoriesList.add("Add New Category");
+        /*for (MyPlace myPlace : AppManager.getInstance().getMyPlaces()) {
+            if(myPlace.getCategory() != null) {
+                if (!(categoriesList.contains(myPlace.getCategory()))) {
+                    categoriesList.add(myPlace.getCategory());
+                }
+            }
+        }*/
 
-       for (MyPlace myPlace : AppManager.getInstance().getMyPlaces()) {
-           if(!(categoriesList.contains(myPlace.getCategory()))) {
-               categoriesList.add(myPlace.getCategory());
-           }
-       }
+        categoriesList.add("California");
+        categoriesList.add("Bars");
+        categoriesList.add("Museums");
 
-       categoriesList.add("California");
-       categoriesList.add("Bars");
-       categoriesList.add("Museums");
-
-       spinnerItemId = R.layout.spinner_item;
-   }
+        spinnerItemId = R.layout.spinner_item;
+    }
 
     public void populate(final Context context, Spinner spinnerId){
         final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(context, spinnerItemId, categoriesList) {
@@ -59,6 +59,7 @@ public class CustomSpinner {
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
+
                 if (position == 0) {
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
@@ -77,30 +78,12 @@ public class CustomSpinner {
 
             @Override
             public void onItemSelected(final AdapterView<?> parent, View view, int position, long id) {
-                String selectedItem = (String) parent.getItemAtPosition(position).toString();
+                String selectedItem = parent.getItemAtPosition(position).toString();
 
                 // If user change the default selection
                 // First item is disable and it is used for hint
                 if(selectedItem.equals("Add New Category")){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    LayoutInflater li = LayoutInflater.from(context);
-
-                    View dialogView = li.inflate(R.layout.new_category_dialog, null);
-
-                    final EditText newCategoryEt = dialogView.findViewById(R.id.new_category_et);
-                    builder.setView(dialogView).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String newCategoryStr = newCategoryEt.getText().toString();
-
-                                if(!(categoriesList.contains(newCategoryStr))) {
-                                    categoriesList.add(newCategoryStr);
-                                }
-                                parent.setSelection(categoriesList.size()-1);
-                        }
-                    }).show();
-
-                //    builder.setView(dialogView).setNegativeButton("Cancel");
+                    ShowAddCategoryDialog(context, parent);
                 }
 
                 if(position > 0){
@@ -118,4 +101,29 @@ public class CustomSpinner {
         });
     }
 
+    public void ShowAddCategoryDialog(Context context, final AdapterView<?> parent){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater li = LayoutInflater.from(context);
+        View dialogView = li.inflate(R.layout.new_category_dialog, null);
+
+        final EditText newCategoryEt = dialogView.findViewById(R.id.new_category_et);
+        builder.setView(dialogView).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newCategoryStr = newCategoryEt.getText().toString();
+
+                if(!(categoriesList.contains(newCategoryStr))) {
+                    categoriesList.add(newCategoryStr);
+                }
+                parent.setSelection(categoriesList.size()-1);
+                selectedItemStr =  parent.getSelectedItem().toString();
+            }
+        }).show();
+
+        //    builder.setView(dialogView).setNegativeButton("Cancel");
+    }
+
+    public String getSelectedItemStr() {
+        return selectedItemStr;
+    }
 }

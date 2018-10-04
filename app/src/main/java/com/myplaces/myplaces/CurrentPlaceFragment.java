@@ -95,7 +95,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     private final int REQUEST_PERMISSION_CAMERA = 2;
     private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 3;
-    private final int DEFAULT_ZOOM = 15;;
+    private final int DEFAULT_ZOOM = 15;
     private MyPlace myPlace;
 
     private TextView mCurrentLocationTextView;
@@ -108,7 +108,6 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     ImageButton takePic_btn;
     ImageView takenPicture_iv;
     LinearLayout linearLayout;
-    Spinner categorySpinner;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -268,7 +267,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     }
 
     public void ShowSavePlaceDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         final View dialogView = getLayoutInflater().inflate(R.layout.save_place_dialog, null);
         TextView locationTv = dialogView.findViewById(R.id.location_tv);
@@ -277,16 +276,16 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         ImageButton editBtn = dialogView.findViewById(R.id.edit_description_btn);
         ImageButton shareBtn = dialogView.findViewById(R.id.share_btn);
         Button saveBtn = dialogView.findViewById(R.id.save_btn);
-        ImageButton addCategoryBtn = dialogView.findViewById(R.id.add_new_category_btn);
-
 
         locationTv.setText(myPlace.getLocation());
         placeTitleTv.setText(myPlace.getTitle());
 
         Spinner spinner = dialogView.findViewById(R.id.choosen_category_spinner);
-        CustomSpinner customSpinner = new CustomSpinner();
-        customSpinner.populate(getActivity(), spinner);
+        SpinnerData spinnerData = new SpinnerData();
+        spinnerData.populate(getActivity(), spinner);
 
+        String selectedCategory = spinnerData.getSelectedItemStr();
+        myPlace.setCategory(selectedCategory);
 
 
 /*        recyclerView = dialogView.findViewById(R.id.categories_recycler);
@@ -304,17 +303,24 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
             }
         });*/
 
-        builder.setView(dialogView).show();
+        final AlertDialog alertDialog = builder.setView(dialogView).show();
+
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AppManager.getInstance().getMyPlaces().add(myPlace);
-                AppManager.getInstance().Save(getContext());
+                if(!(AppManager.getInstance().getMyPlaces().contains(myPlace))) {
+                    AppManager.getInstance().getMyPlaces().add(myPlace);
+                    AppManager.getInstance().Save(getContext());
 
-                Log.i(mTitle, "ADDDEDDD: " + AppManager.getInstance().getMyPlaces().get(0).getLocation());
+                    Log.i(mTitle, "ADDDEDDD: " + AppManager.getInstance().getMyPlaces().get(0).getLocation());
+                }
+                alertDialog.dismiss();
             }
         });
+
+
+
 
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
