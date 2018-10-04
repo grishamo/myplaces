@@ -48,6 +48,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -83,6 +84,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     private Geocoder geocoder;
     private Location mLastKnownLocation;
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
+    private Marker placeMarker;
 
     private final int REQUEST_PERMISSION_CAMERA = 2;
     private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
@@ -92,7 +94,6 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
 
     private TextView mCurrentLocationTextView;
     private TextView mCurrentLocationCountryCity;
-    Button mSavePlace_btn;
 
     Button mSavePlaceBtn;
     RecyclerView recyclerView;
@@ -102,11 +103,6 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     ImageView takenPicture_iv;
     LinearLayout linearLayout;
     TextView choosenCategoryTv;
-
-    public CurrentPlaceFragment() {
-        // Required empty public constructor
-    }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -136,7 +132,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         mSavePlaceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShowDialog();
+                ShowSavePlaceDialog();
             }
         });
     }
@@ -207,19 +203,23 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                 locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
+                        LatLng locationLatLng;
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
+                            mMap.getUiSettings().setMyLocationButtonEnabled(true);
                             mLastKnownLocation = task.getResult();
-                            LatLng lastLocationLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                            SetCurrentLocationText(lastLocationLatLng);
-                            SetMarkerPosition(lastLocationLatLng);
+                            locationLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                         } else {
                             Log.d(mTitle, "Current location is null. Using defaults.");
                             Log.e(mTitle, "Exception: %s", task.getException());
 
-                            SetMarkerPosition(mDefaultLocation);
+                            locationLatLng = mDefaultLocation;
                             mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
+
+                        SetCurrentLocationText(locationLatLng);
+                        SetMarkerPosition(locationLatLng);
+                        ChangeCameraPosition(locationLatLng);
                     }
                 });
             }
@@ -261,7 +261,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         }
     }
 
-    public void ShowDialog(){
+    public void ShowSavePlaceDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         final View dialogView = getLayoutInflater().inflate(R.layout.save_place_dialog, null);
@@ -273,17 +273,13 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         Button saveBtn = dialogView.findViewById(R.id.save_btn);
         choosenCategoryTv = dialogView.findViewById(R.id.choosen_category_tv);
 
-
-
         locationTv.setText(myPlace.getLocation());
         placeTitleTv.setText(myPlace.getTitle());
-
 
         recyclerView = dialogView.findViewById(R.id.categories_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         myPlacesList = new ArrayList<>();
-
 
         placeAdapter = new PlaceAdapter(myPlacesList);
         recyclerView.setAdapter(placeAdapter);
@@ -351,13 +347,19 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         builder.setView(dialogView).show();
     }
 
-    public void SetMarkerPosition(LatLng position) {
+    public void ChangeMarkerPosition(LatLng position) {
+        placeMarker.setPosition(position);
+        ChangeCameraPosition(position);
+    }
 
-        mMap.addMarker(new MarkerOptions()
+    public void SetMarkerPosition(LatLng position) {
+        placeMarker = mMap.addMarker(new MarkerOptions()
                 .position(position)
                 .draggable(true)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+    }
 
+    private void ChangeCameraPosition(LatLng position) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(position)           // Sets the center of the map to Mountain View
                 .zoom(DEFAULT_ZOOM)         // Sets the zoom
@@ -390,9 +392,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     }
 
     @Override
-    public void FragmentSelect() {
-
-    }
+    public void FragmentSelect() {}
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -400,7 +400,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(getContext(), data);
                 SetCurrentLocationText(place.getLatLng());
-                SetMarkerPosition(place.getLatLng());
+                ChangeMarkerPosition(place.getLatLng());
                 Log.i(mTitle, "Place: " + place.getAddress());
                 myPlace = new MyPlace(place);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
