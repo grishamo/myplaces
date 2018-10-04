@@ -61,6 +61,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private MyPlace myPlace;
 
+
     Button mSavePlaceBtn;
     RecyclerView recyclerView;
     List<MyPlace> myPlacesList;
@@ -125,15 +126,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         Button saveBtn = dialogView.findViewById(R.id.save_btn);
         choosenCategoryTv = dialogView.findViewById(R.id.choosen_category_tv);
 
- /*       try {
-           // ImageView i = (ImageView)findViewById(R.id.image);
-            Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(myPlace.getWebUri().getEncodedPath()).getContent());
-            placeImageIv.setImageBitmap(bitmap);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+
 
         locationTv.setText(myPlace.getLocation());
         placeTitleTv.setText(myPlace.getTitle());
@@ -143,16 +136,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         myPlacesList = new ArrayList<>();
-        myPlacesList.add(new MyPlace("Bars", "bla", "bla"));
-        myPlacesList.add(new MyPlace("Rest", "bla", "bla"));
-        myPlacesList.add(new MyPlace("Hotel", "bla", "bla"));
-        myPlacesList.add(new MyPlace("Brothel", "bla", "bla"));
-        myPlacesList.add(new MyPlace("Custom", "bla", "bla"));
-        myPlacesList.add(new MyPlace("asd", "bla", "bla"));
-        myPlacesList.add(new MyPlace("Cusagdsfhdtom", "bla", "bla"));
-        myPlacesList.add(new MyPlace("argfgbvhn", "bla", "bla"));
-        myPlacesList.add(new MyPlace("w45ergd", "bla", "bla"));
-        myPlacesList.add(new MyPlace("4w56tertesr", "bla", "bla"));
+
 
         placeAdapter = new PlaceAdapter(myPlacesList);
         recyclerView.setAdapter(placeAdapter);
@@ -170,6 +154,8 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 AppManager.getInstance().getMyPlaces().add(myPlace);
+                AppManager.getInstance().Save(getContext());
+
                 Log.i(mTitle, "ADDDEDDD: " + AppManager.getInstance().getMyPlaces().get(0).getLocation());
             }
         });
@@ -237,6 +223,11 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     @Override
     public String GetPageTitle() {
         return mTitle;
+    }
+
+    @Override
+    public void FragmentSelect() {
+
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
 {
-
+    private SimpleFragmentPagerAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
 
         // Create an adapter that knows which fragment should be shown on each page
-        SimpleFragmentPagerAdapter adapter = new SimpleFragmentPagerAdapter(this, getSupportFragmentManager(), tabLayout);
+        adapter = new SimpleFragmentPagerAdapter(this, getSupportFragmentManager(), tabLayout);
 
 
         // Add Page Fragment to adapter
@@ -43,5 +43,20 @@ public class MainActivity extends AppCompatActivity
 
         AppManager appManager = AppManager.getInstance();
         appManager.Load(getApplicationContext());
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position)
+            {
+                IPageFragment fragment = (IPageFragment)adapter.getItem(position);
+                fragment.FragmentSelect();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
     }
 }

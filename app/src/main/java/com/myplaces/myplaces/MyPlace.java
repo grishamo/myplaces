@@ -28,22 +28,15 @@ public class MyPlace implements Serializable
         this.photo = photo;
     }
 
-    public MyPlace(Place googlePlaceObj)
-    {
+    public MyPlace(Place googlePlaceObj) {
         this.title = googlePlaceObj.getName().toString();
         this.location = googlePlaceObj.getAddress().toString();
         this.phoneNumber = googlePlaceObj.getPhoneNumber().toString();
-       // this.googlePlace = googlePlaceObj;
+        // this.googlePlace = googlePlaceObj;
         // Got an GetPath methods..
-        this.webURL = googlePlaceObj.getWebsiteUri().getPath();
-
-    public Uri getWebUri() {
-        return webUri;
+       // this.webURL = googlePlaceObj.getWebsiteUri().getPath();
     }
 
-    public void setWebUri(Uri webUri) {
-        this.webUri = webUri;
-    }
 
     public String getTitle() {
         return this.title;
@@ -86,16 +79,16 @@ public class MyPlace implements Serializable
         this.phoneNumber = phoneNumber;
     }
 
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException
-    {
-        photo.compress(Bitmap.CompressFormat.JPEG,50, out);
-        out.defaultWriteObject();
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
-    {
-        photo = BitmapFactory.decodeStream(in);
-        in.defaultReadObject();
-    }
+//    private void writeObject(java.io.ObjectOutputStream out) throws IOException
+//    {
+//        photo.compress(Bitmap.CompressFormat.JPEG,50, out);
+//        out.defaultWriteObject();
+//    }
+//
+//    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
+//    {
+//        photo = BitmapFactory.decodeStream(in);
+//        in.defaultReadObject();
+//    }
 
 }
