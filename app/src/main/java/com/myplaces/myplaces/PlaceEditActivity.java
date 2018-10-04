@@ -43,6 +43,7 @@ public class PlaceEditActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mPlaceItem = (MyPlace) intent.getSerializableExtra("myplace");
 
+        Log.i("PlaceEditActivity", "onCreate");
         setContentView(R.layout.activity_place_edit);
 
         _this = this;
@@ -60,10 +61,10 @@ public class PlaceEditActivity extends AppCompatActivity {
 
     private void populateFields() {
         if(mPlaceItem != null) {
-            String address = mPlaceItem.getAddress().getAddressLine(0);
-
-            mTitleEt.setText(address);
-            mMainImageIv.setImageBitmap(mPlaceItem.GetAllImages().get(0));
+            mTitleEt.setText(mPlaceItem.getTitle());
+            mLocationEt.setText(mPlaceItem.getTitle());
+            mDescriptionEt.setText(mPlaceItem.getDescription());
+            //mMainImageIv.setImageBitmap(mPlaceItem.GetAllImages().get(0));
         }
     }
 

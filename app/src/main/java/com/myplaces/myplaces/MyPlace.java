@@ -11,6 +11,8 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,27 +20,20 @@ import java.util.Locale;
 
 public class MyPlace implements Serializable
 {
-    private Address address;
+    transient  private Address address;
 
     // should be..
-
-
     private String city;
     private String country;
 
-
-
     private String streetAddress;
-    //
 
     private String category;
     private String phoneNumber;
-    private Bitmap defaultPhoto;
+    transient private Bitmap defaultPhoto;
     private String description;
-    private ArrayList<Bitmap> additionalPhotos;
+    transient private ArrayList<Bitmap> additionalPhotos;
     private String webURL;
-
-
 
     private String googlePlaceId;
     private String title;
@@ -49,11 +44,9 @@ public class MyPlace implements Serializable
     {
         this.address = address;
 
-        //
         this.city = address.getLocality();
         this.country = address.getCountryName();
         this.streetAddress = address.getAddressLine(0);
-        //
 
         this.title = address.getAddressLine(0);
         this.phoneNumber = address.getPhone();
@@ -82,6 +75,7 @@ public class MyPlace implements Serializable
         this.country = addresses.get(0).getCountryName();
         this.streetAddress = addresses.get(0).getAddressLine(0);
         this.address = addresses.get(0);
+        this.googlePlaceId = googlePlaceObj.getId();
     }
 
 
@@ -201,5 +195,36 @@ public class MyPlace implements Serializable
         allImages.add(0,defaultPhoto);
         return allImages;
     }
+
+    // Methods for Serialization
+//    private void writeObject(ObjectOutputStream out) throws IOException{
+//        out.writeObject(title);
+//        out.writeInt(currentWidth);
+//        out.writeInt(currentHeight);
+//
+//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        currentImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//        BitmapDataObject bitmapDataObject = new BitmapDataObject();
+//        bitmapDataObject.imageByteArray = stream.toByteArray();
+//
+//        out.writeObject(bitmapDataObject);
+//    }
+
+//    private void writeObject(ObjectOutputStream out) throws IOException {
+//        out.defaultWriteObject();
+//        out.writeInt(additionalPhotos.size()); // how many images are serialized?
+//        for (Bitmap eachImage : additionalPhotos) {
+//            ImageIO.write(eachImage, "png", out); // png is lossless
+//        }
+//    }
+
+//    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+//        in.defaultReadObject();
+//        final int imageCount = in.readInt();
+//        additionalPhotos = new ArrayList<BufferedImage>(imageCount);
+//        for (int i=0; i<imageCount; i++) {
+//            additionalPhotos.add(ImageIO.read(in));
+//        }
+//    }
 
 }
