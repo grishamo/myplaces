@@ -21,12 +21,18 @@ public class AppManager implements Serializable
     private static volatile AppManager instance;
     private static transient Object mutex = new Object();
     private ArrayList<MyPlace> myPlaces;
-
+    private ArrayList<String> categoriesList;
+    private ArrayList<String> citiesList;
+    private ArrayList<String> countriesList;
 
     // Constructor
     private AppManager()
     {
         myPlaces = new ArrayList<>();
+        categoriesList = new ArrayList<>();
+        citiesList = new ArrayList<>();
+        countriesList = new ArrayList<>();
+
     }
 
     public static AppManager getInstance()
@@ -55,6 +61,34 @@ public class AppManager implements Serializable
     {
         this.myPlaces = myPlaces;
     }
+
+    public ArrayList<String> getCategoriesList() {
+        return categoriesList;
+    }
+
+    public void setCategoriesList(ArrayList<String> categoriesList) {
+        this.categoriesList = categoriesList;
+    }
+
+    public ArrayList<String> getCitiesList() {
+        return citiesList;
+    }
+
+    public void setCitiesList(ArrayList<String> citiesList) {
+        this.citiesList = citiesList;
+    }
+
+    public ArrayList<String> getCountriesList() {
+        return countriesList;
+    }
+
+    public void setCountriesList(ArrayList<String> countriesList) {
+        this.countriesList = countriesList;
+    }
+
+
+
+    // Storage shit..
 
     public void Save(Context ctx)
     {
@@ -108,5 +142,40 @@ public class AppManager implements Serializable
         File file = ctx.getApplicationContext().getFileStreamPath(fname);
         return file.exists();
     }
+
+
+
+
+    // CHECK FOR DIVIDING VALIDATION AND INSERTION SEPERATELY!
+    public static void checkForMenusContentsDuplicates(MyPlace myPlace)
+    {
+        if(!AppManager.getInstance().getCategoriesList().contains(myPlace.getCategory()))
+        {
+            AppManager.getInstance().getCategoriesList().add(myPlace.getCategory());
+        }
+
+        if(!AppManager.getInstance().getCitiesList().contains(myPlace.getCity()))
+        {
+            AppManager.getInstance().getCitiesList().add(myPlace.getCity());
+        }
+
+        if(!AppManager.getInstance().getCountriesList().contains(myPlace.getCountry()))
+        {
+            AppManager.getInstance().getCountriesList().add(myPlace.getCountry());
+        }
+    }
+
+    // TO BE CONTINUE !
+//    public static void checkMyPlaceObjectDuplicateBeforeInsertion(MyPlace myPlace)
+//    {
+//        if(!AppManager.getInstance().getMyPlaces().contains(myPlace))
+//    }
+
+
+
+
+
+
+    //
 
 }

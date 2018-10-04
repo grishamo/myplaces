@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -25,13 +27,20 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
     private int mPageIcon = R.drawable.ic_location_on_black_24dp;
     private String mTitle = "My Places :)";
     private ListView placesListView;
-    private ArrayList<MyPlace> myPlacesArrayList = new ArrayList<>();
-    private View rootView;
-    private Spinner cityDropDown;
-    private Spinner categoryDropDown;
-    private Spinner countryDropDown;
 
-    public MyPlacesFragment() {
+
+    private View rootView;
+
+    private Button cityBtn;
+    private Button categoryBtn;
+    private Button countryBtn;
+
+    private PopupMenu categoryPopupMenu;
+    private PopupMenu cityPopupMenu;
+    private PopupMenu countryPopupMenu;
+
+    public MyPlacesFragment()
+    {
         // Required empty public constructor
     }
 
@@ -44,11 +53,16 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
         rootView = inflater.inflate(R.layout.myplaces_fragment, container, false);
 
         placesListView = rootView.findViewById(R.id.myplaces_Listview);
-        cityDropDown = rootView.findViewById(R.id.dropDown_city);
-        countryDropDown = rootView.findViewById(R.id.dropDown_country);
-        categoryDropDown = rootView.findViewById(R.id.dropDown_category);
+        cityBtn = rootView.findViewById(R.id.city_btn);
+        countryBtn = rootView.findViewById(R.id.country_btn);
+        categoryBtn = rootView.findViewById(R.id.category_btn);
+
+        categoryPopupMenu = new PopupMenu(getActivity(), categoryBtn);
+        countryPopupMenu = new PopupMenu(getActivity(), countryBtn);
+        cityPopupMenu = new PopupMenu(getActivity(), cityBtn);
         
         PopulatePlacesListView();
+        PopulateMenuContents();
 
         placesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -59,40 +73,29 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
             }
         });
 
+        cityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cityPopupMenu.show();
+            }
+        });
 
-//        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
-//        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
-//        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
-//        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
-//        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
-//        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
-//        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
-//        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
-//        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
-//        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
-//        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
-//        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
+        countryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                countryPopupMenu.show();
+            }
+        });
 
-
-
-        String[] categoryList = new String[]{"bar", "food", "travels"};
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, categoryList);
-        categoryDropDown.setAdapter(categoryAdapter);
-
-
-        String[] cityList = new String[]{"rehovot", "holon", "telaviv"};
-        ArrayAdapter<String> cityaAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, cityList);
-        cityDropDown.setAdapter(cityaAdapter);
-
-
-        String[] countryList = new String[]{"israel", "canada", "usa"};
-        ArrayAdapter<String> countryAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, countryList);
-        countryDropDown.setAdapter(countryAdapter);
-
+        categoryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                categoryPopupMenu.show();
+            }
+        });
 
         return rootView;
     }
-
 
     @Override
     public int GetPageIcon() {
@@ -107,14 +110,49 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
     @Override
     public void FragmentSelect() {
         PopulatePlacesListView();
+        PopulateMenuContents();
     }
 
     public void PopulatePlacesListView()
     {
-        myPlacesArrayList = AppManager.getInstance().getMyPlaces();
+        ArrayList<MyPlace> myPlacesArrayList = AppManager.getInstance().getMyPlaces();
         MyPlacesCustomAdapter mpca = new MyPlacesCustomAdapter(myPlacesArrayList, getActivity());
         placesListView.setAdapter(mpca);
     }
 
+    public void PopulateMenuContents()
+    {
+        ArrayList<String> categories = AppManager.getInstance().getCategoriesList();
+        ArrayList<String> countries = AppManager.getInstance().getCountriesList();
+        ArrayList<String> cities = AppManager.getInstance().getCitiesList();
+
+        if(categories.size() != categoryPopupMenu.getMenu().size())
+        {
+            categoryPopupMenu.getMenu().clear();
+            for(String category: categories)
+            {
+                categoryPopupMenu.getMenu().add(category);
+            }
+        }
+
+        if(cities.size() != cityPopupMenu.getMenu().size())
+        {
+            cityPopupMenu.getMenu().clear();
+            for(String city: cities)
+            {
+                cityPopupMenu.getMenu().add(city);
+            }
+        }
+
+        if(countries.size() != countryPopupMenu.getMenu().size())
+        {
+            countryPopupMenu.getMenu().clear();
+            for(String country: countries)
+            {
+                countryPopupMenu.getMenu().add(country);
+            }
+        }
+
+    }
 
 }

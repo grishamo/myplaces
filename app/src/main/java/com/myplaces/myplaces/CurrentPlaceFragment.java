@@ -280,6 +280,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         Button saveBtn = dialogView.findViewById(R.id.save_btn);
         choosenCategoryTv = dialogView.findViewById(R.id.choosen_category_tv);
 
+        locationTv.setText(myPlace.getCity());
         placeTitleTv.setText(myPlace.getTitle());
 
         recyclerView = dialogView.findViewById(R.id.categories_recycler);
@@ -303,6 +304,8 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 AppManager.getInstance().getMyPlaces().add(myPlace);
+
+                AppManager.checkForMenusContentsDuplicates(myPlace);
                 AppManager.getInstance().Save(getContext());
             }
         });
