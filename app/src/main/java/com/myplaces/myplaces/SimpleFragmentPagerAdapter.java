@@ -35,6 +35,7 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
         return allFragments.get(position);
     }
 
+
     // This determines the number of tabs
     @Override
     public int getCount() {
@@ -49,24 +50,5 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
             index++;
         }
     }
-
-
-    // This determines the title for each tab
-/*    @Override
-    public CharSequence getPageTitle(int position) {
-        // Generate title based on item position
-        switch (position) {
-            case 0:
-                return mContext.getString(R.string.app_name);
-            case 1:
-                return mContext.getString(R.string.app_name);
-            case 2:
-                return mContext.getString(R.string.app_name);
-            default:
-                return null;
-        }
-
-    }*/
-
 
 }

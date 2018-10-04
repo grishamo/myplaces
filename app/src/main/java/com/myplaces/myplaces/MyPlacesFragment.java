@@ -1,9 +1,11 @@
 package com.myplaces.myplaces;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 
@@ -33,6 +36,8 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
         // Required empty public constructor
     }
 
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -44,6 +49,7 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
         countryDropDown = rootView.findViewById(R.id.dropDown_country);
         categoryDropDown = rootView.findViewById(R.id.dropDown_category);
 
+        PopulatePlacesListView();
 
         placesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -54,20 +60,20 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
             }
         });
 
-        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
-        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
-        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
-        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
-        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
-        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
-        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
-        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
-        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
-        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
-        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
-        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
-        MyPlacesCustomAdapter mpca = new MyPlacesCustomAdapter(myPlacesArrayList, getActivity());
-        placesListView.setAdapter(mpca);
+
+//        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
+//        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
+//        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
+//        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
+//        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
+//        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
+//        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
+//        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
+//        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
+//        myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
+//        myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));
+//        myPlacesArrayList.add(new MyPlace("LCCCol","RORRRFL","STFU WWWW"));
+
 
 
         String[] categoryList = new String[]{"bar", "food", "travels"};
@@ -99,7 +105,17 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
         return mTitle;
     }
 
+    @Override
+    public void FragmentSelect() {
+        PopulatePlacesListView();
+    }
 
+    public void PopulatePlacesListView()
+    {
+        myPlacesArrayList = AppManager.getInstance().getMyPlaces();
+        MyPlacesCustomAdapter mpca = new MyPlacesCustomAdapter(myPlacesArrayList, getActivity());
+        placesListView.setAdapter(mpca);
+    }
 
 
 }
