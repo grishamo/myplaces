@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -28,7 +29,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -54,6 +55,9 @@ import com.google.android.gms.tasks.Task;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,17 +87,26 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     private final int REQUEST_PERMISSION_CAMERA = 2;
     private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 3;
-    private final int DEFAULT_ZOOM = 15;
+    private final int DEFAULT_ZOOM = 15;;
+    private MyPlace myPlace;
 
     private TextView mCurrentLocationTextView;
     private TextView mCurrentLocationCountryCity;
     Button mSavePlace_btn;
+
+    Button mSavePlaceBtn;
     RecyclerView recyclerView;
-    List<MyPlaces> myPlacesList;
+    List<MyPlace> myPlacesList;
     PlaceAdapter placeAdapter;
     ImageButton takePic_btn;
     ImageView takenPicture_iv;
     LinearLayout linearLayout;
+    TextView choosenCategoryTv;
+
+    public CurrentPlaceFragment() {
+        // Required empty public constructor
+    }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -119,8 +132,8 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     }
 
     private void initSavePlaceBtn() {
-        mSavePlace_btn = rootView.findViewById(R.id.save_place_popup_btn);
-        mSavePlace_btn.setOnClickListener(new View.OnClickListener() {
+        mSavePlaceBtn = rootView.findViewById(R.id.save_place_popup_btn);
+        mSavePlaceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ShowDialog();
@@ -251,32 +264,48 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     public void ShowDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        View dialogView = getLayoutInflater().inflate(R.layout.save_place_dialog, null);
+        final View dialogView = getLayoutInflater().inflate(R.layout.save_place_dialog, null);
         TextView locationTv = dialogView.findViewById(R.id.location_tv);
         TextView placeTitleTv = dialogView.findViewById(R.id.place_title_tv);
+        ImageView placeImageIv = dialogView.findViewById(R.id.place_google_iv);
         Button editBtn = dialogView.findViewById(R.id.edit_description_btn);
         Button shareBtn = dialogView.findViewById(R.id.share_btn);
         Button saveBtn = dialogView.findViewById(R.id.save_btn);
+        choosenCategoryTv = dialogView.findViewById(R.id.choosen_category_tv);
+
+
+
+        locationTv.setText(myPlace.getLocation());
+        placeTitleTv.setText(myPlace.getTitle());
+
 
         recyclerView = dialogView.findViewById(R.id.categories_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         myPlacesList = new ArrayList<>();
-        myPlacesList.add(new MyPlaces("Bars", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("Rest", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("Hotel", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("Brothel", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("Custom", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("asd", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("Cusagdsfhdtom", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("argfgbvhn", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("w45ergd", "bla", "bla"));
-        myPlacesList.add(new MyPlaces("4w56tertesr", "bla", "bla"));
+
 
         placeAdapter = new PlaceAdapter(myPlacesList);
         recyclerView.setAdapter(placeAdapter);
+        placeAdapter.setListener(new PlaceAdapter.MyPlaceListener() {
+            @Override
+            public void onCategoryClick(int position, View view) {
+                choosenCategoryTv.setText(myPlacesList.get(position).getTitle());
+                myPlace.setCategory(choosenCategoryTv.getText().toString());
+            }
+        });
 
         builder.setView(dialogView).show();
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppManager.getInstance().getMyPlaces().add(myPlace);
+                AppManager.getInstance().Save(getContext());
+
+                Log.i(mTitle, "ADDDEDDD: " + AppManager.getInstance().getMyPlaces().get(0).getLocation());
+            }
+        });
 
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -286,11 +315,23 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         });
     }
 
-    public void ShowEditDialog(){
+    public void ShowEditDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-       final View dialogView = getLayoutInflater().inflate(R.layout.custom_place_description_dialog, null);
+        final View dialogView = getLayoutInflater().inflate(R.layout.custom_place_description_dialog, null);
         takePic_btn = dialogView.findViewById(R.id.add_image_ib);
+        EditText locationEt = dialogView.findViewById(R.id.location_et);
+        EditText titleEt = dialogView.findViewById(R.id.title_et);
+        EditText descriptionEt = dialogView.findViewById(R.id.description_et);
+
+        locationEt.setText(myPlace.getLocation());
+        myPlace.setLocation(locationEt.getText().toString());
+
+        titleEt.setText(myPlace.getTitle());
+        myPlace.setTitle(titleEt.getText().toString());
+
+        descriptionEt.setText(myPlace.getDescription());
+        myPlace.setDescription(descriptionEt.getText().toString());
 
         takePic_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -349,6 +390,11 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     }
 
     @Override
+    public void FragmentSelect() {
+
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -356,6 +402,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                 SetCurrentLocationText(place.getLatLng());
                 SetMarkerPosition(place.getLatLng());
                 Log.i(mTitle, "Place: " + place.getAddress());
+                myPlace = new MyPlace(place);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(getContext(), data);
                 // TODO: Handle the error.
@@ -365,10 +412,10 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                 // The user canceled the operation.
             }
         }
-        if(requestCode == REQUEST_PERMISSION_CAMERA){
+        if (requestCode == REQUEST_PERMISSION_CAMERA) {
             super.onActivityResult(requestCode, resultCode, data);
 
-            Bitmap bitmap = (Bitmap)data.getExtras().get("data");
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             takenPicture_iv.setImageBitmap(bitmap);
         }
     }

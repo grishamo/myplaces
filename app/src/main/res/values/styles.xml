@@ -27,4 +27,11 @@
 
     <style name="NoHeader.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="PlaceButtonStyle">
+        <item name="android:layout_marginHorizontal">5dp</item>
+        <item name="android:layout_width">55dp</item>
+        <item name="android:layout_height">55dp</item>
+        <item name="android:background">@drawable/circle_shape_icon_background</item>
+    </style>
+
 </resources>
