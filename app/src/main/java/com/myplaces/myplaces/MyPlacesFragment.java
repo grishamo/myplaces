@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +53,6 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
                 startActivity(placeFullyInfoIntent);
             }
         });
-
 
         myPlacesArrayList.add(new MyPlace("Lol","ROFL","STFU BITCH"));
         myPlacesArrayList.add(new MyPlace("HAHAHAHA","SDSDAS","STFU SDASDA"));

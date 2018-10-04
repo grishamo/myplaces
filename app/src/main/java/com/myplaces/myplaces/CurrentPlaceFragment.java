@@ -218,7 +218,6 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         builder.setView(dialogView).show();
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
