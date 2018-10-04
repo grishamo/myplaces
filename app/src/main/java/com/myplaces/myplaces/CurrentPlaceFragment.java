@@ -218,7 +218,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                             mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
 
-                        myPlace = new MyPlace(getPlaceAddress(locationLatLng));
+                        BuildCustomPlace(locationLatLng);
                         SetCurrentLocationText(getPlaceAddress(locationLatLng));
                         SetMarkerPosition(locationLatLng);
                         ChangeCameraPosition(locationLatLng);
@@ -375,7 +375,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                 SetCurrentLocationText(getPlaceAddress(place.getLatLng()));
                 ChangeMarkerPosition(place.getLatLng());
                 Log.i(mTitle, "Place: " + place.getAddress());
-                myPlace = new MyPlace(place);
+                BuildGooglePlace(place);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(getContext(), data);
                 // TODO: Handle the error.
@@ -387,6 +387,13 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         }
     }
 
+    private void BuildGooglePlace(Place place) {
+        myPlace = new MyPlace(place);
+    }
+
+    private void BuildCustomPlace(LatLng locationLatLng){
+        myPlace = new MyPlace(getPlaceAddress(locationLatLng));
+    }
     // Request photos and metadata for the specified place.
     private void getPhotos(String placeId ) {
         final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(placeId);
@@ -414,8 +421,5 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         });
     }
 
-    private void buildMyPlace(){
-
-    }
 
 }
