@@ -147,7 +147,7 @@ public class AppManager implements Serializable
 
 
     // CHECK FOR DIVIDING VALIDATION AND INSERTION SEPERATELY!
-    public static void checkForMenusContentsDuplicates(MyPlace myPlace)
+    public static void SetMenuItemss(MyPlace myPlace)
     {
         if(!AppManager.getInstance().getCategoriesList().contains(myPlace.getCategory()))
         {

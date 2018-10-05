@@ -104,6 +104,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
 
     private TextView mCurrentLocationTextView;
     private TextView mCurrentLocationCountryCity;
+    private AppManager mAppMananger = AppManager.getInstance();
 
     Button mSavePlaceBtn;
     RecyclerView recyclerView;
@@ -145,18 +146,18 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     }
 
     private void getLocationPermission() {
-            /*
-             * Request location permission, so that we can get the location of the
-             * device. The result of the permission request is handled by a callback,
-             * onRequestPermissionsResult.
-             */
-            if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                mLocationPermissionGranted = true;
-            } else {
-                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION }, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            }
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+        } else {
+            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
 
     }
 
@@ -191,7 +192,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                 mLastKnownLocation = null;
                 getLocationPermission();
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -231,7 +232,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                     }
                 });
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -266,7 +267,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
 
     private Address getPlaceAddress(LatLng latLng) {
         try {
-            List<Address>addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
             return addresses.get(0);
         } catch (IOException e) {
             e.printStackTrace();
@@ -274,7 +275,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         }
     }
 
-    public void ShowSavePlaceDialog(){
+    public void ShowSavePlaceDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         final View dialogView = getLayoutInflater().inflate(R.layout.save_place_dialog, null);
@@ -287,57 +288,38 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
 
         locationTv.setText(myPlace.getCity());
         placeTitleTv.setText(myPlace.getTitle());
-        Bitmap defaultImage= myPlace.getDefaultPhoto();
+        Bitmap defaultImage = myPlace.getDefaultPhoto();
 
-        if(defaultImage != null)
-        {
+        if (defaultImage != null) {
             placeImageIv.setImageBitmap(defaultImage);
         }
 
         Spinner spinner = dialogView.findViewById(R.id.choosen_category_spinner);
-        SpinnerData spinnerData = new SpinnerData();
-        spinnerData.populate(getActivity(), spinner);
-
-        String selectedCategory = spinnerData.getSelectedItemStr();
-        myPlace.setCategory(selectedCategory);
-
-
-/*        recyclerView = dialogView.findViewById(R.id.categories_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));*//*
-
-        myPlacesList = new ArrayList<>();
-
-        placeAdapter = new PlaceAdapter(myPlacesList);
-        recyclerView.setAdapter(placeAdapter);
-        placeAdapter.setListener(new PlaceAdapter.MyPlaceListener() {
-            @Override
-            public void onCategoryClick(int position, View view) {
-                choosenCategoryTv.setText(myPlacesList.get(position).getTitle());
-                myPlace.setCategory(choosenCategoryTv.getText().toString());
-            }
-        });*/
+        final SpinnerData spinnerData = new SpinnerData();
+        spinnerData.populate(getContext(), spinner);
 
         final AlertDialog alertDialog = builder.setView(dialogView).show();
-
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!(AppManager.getInstance().getMyPlaces().contains(myPlace))) {
-                    AppManager.getInstance().getMyPlaces().add(myPlace);
-                    AppManager.getInstance().Save(getContext());
+                if (!(mAppMananger.getMyPlaces().contains(myPlace))) {
 
-                    Log.i(mTitle, "ADDDEDDD: " + AppManager.getInstance().getMyPlaces().get(0).getLocation());
+                    String selectedCategory = spinnerData.getSelectedItemStr();
+                    if(selectedCategory != null) {
+                        myPlace.setCategory(selectedCategory);
+                        Log.i("ShowSavePlaceDialog", selectedCategory);
+                    }
+
+                    AppManager.SetMenuItemss(myPlace);
+                    mAppMananger.getMyPlaces().add(myPlace);
+                    mAppMananger.Save(getActivity());
+
+                    //Todo: build DataStorage manager, that except any object and save it to defined storage
                 }
                 alertDialog.dismiss();
-                AppManager.getInstance().getMyPlaces().add(myPlace);
-
-                AppManager.checkForMenusContentsDuplicates(myPlace);
-                AppManager.getInstance().Save(getContext());
             }
         });
-
-
 
 
         editBtn.setOnClickListener(new View.OnClickListener() {
@@ -381,7 +363,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        mMap.setIndoorEnabled(false);
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 
@@ -401,19 +383,20 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     }
 
     @Override
-    public void FragmentSelect() {}
+    public void FragmentSelect() {
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Place place = PlaceAutocomplete.getPlace(getContext(), data);
+                Place place = PlaceAutocomplete.getPlace(rootView.getContext(), data);
                 SetCurrentLocationText(getPlaceAddress(place.getLatLng()));
                 ChangeMarkerPosition(place.getLatLng());
                 Log.i(mTitle, "Place: " + place.getAddress());
                 BuildGooglePlace(place);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                Status status = PlaceAutocomplete.getStatus(getContext(), data);
+                Status status = PlaceAutocomplete.getStatus(rootView.getContext(), data);
                 // TODO: Handle the error.
                 Log.i(mTitle, status.getStatusMessage());
 
@@ -424,49 +407,53 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     }
 
     private void BuildGooglePlace(Place place) {
-        myPlace = new MyPlace(place, getActivity());
+        myPlace = new MyPlace(place, rootView.getContext());
         getPhotos(myPlace);
+
     }
 
-    private void BuildCustomPlace(LatLng locationLatLng){
+    private void BuildCustomPlace(LatLng locationLatLng) {
         myPlace = new MyPlace(getPlaceAddress(locationLatLng));
     }
+
     // Request photos and metadata for the specified place.
-    private void getPhotos(final MyPlace iMyPlace ) {
+    private void getPhotos(final MyPlace iMyPlace) {
         final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(iMyPlace.getGooglePlaceId());
         photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
             @Override
             public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
 
-                    // Get the list of photos.
-                    PlacePhotoMetadataResponse photos = task.getResult();
+                // Get the list of photos.
+                PlacePhotoMetadataResponse photos = task.getResult();
 
-                    // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
-                    PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
-                    // Get the first photo in the list.
+                // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
+                PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                // Get the first photo in the list.
+                if (photoMetadataBuffer != null && photoMetadataBuffer.get(0) != null) {
                     PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
 
-                    if(photoMetadata != null) {
+                    if (photoMetadata != null) {
                         // Get the attribution text.
                         CharSequence attribution = photoMetadata.getAttributions();
                         // Get a full-size bitmap for the photo.
                         Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
 
-                        if(photoResponse != null) {
+                        if (photoResponse != null) {
                             photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
                                 @Override
                                 public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
                                     PlacePhotoResponse photo = task.getResult();
                                     Bitmap bitmap = photo.getBitmap();
-                                    if(bitmap != null) {
+                                    if (bitmap != null) {
                                         iMyPlace.setDefaultPhoto(bitmap);
                                     }
                                 }
                             });
                         }
                     }
-                    photoMetadataBuffer.release();
                 }
+                photoMetadataBuffer.release();
+            }
 
         });
     }

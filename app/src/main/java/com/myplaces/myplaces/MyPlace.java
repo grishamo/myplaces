@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
+import android.util.Log;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
@@ -20,7 +21,7 @@ import java.util.Locale;
 
 public class MyPlace implements Serializable
 {
-    transient  private Address address;
+    private transient Address address;
 
     // should be..
     private String city;
@@ -30,9 +31,9 @@ public class MyPlace implements Serializable
 
     private String category;
     private String phoneNumber;
-    transient private Bitmap defaultPhoto;
+    private transient Bitmap defaultPhoto;
     private String description;
-    transient private ArrayList<Bitmap> additionalPhotos;
+    private transient ArrayList<Bitmap> additionalPhotos;
     private String webURL;
 
     private String googlePlaceId;
@@ -55,27 +56,31 @@ public class MyPlace implements Serializable
 
     public MyPlace(Place googlePlaceObj, Context ctx)
     {
-
+        Log.i("MyPlace", "MyPlace.constructor start");
         Geocoder geocoder = new Geocoder(ctx, Locale.getDefault());
         List<Address>addresses = null;
         this.title = googlePlaceObj.getName().toString();
 
         try
         {
+            Log.i("MyPlace", "MyPlace.constructor try");
             addresses = geocoder.getFromLocation(googlePlaceObj.getLatLng().latitude, googlePlaceObj.getLatLng().longitude, 1);
         }
         catch (IOException e)
         {
+            Log.i("MyPlace", "MyPlace.constructor catch");
             e.printStackTrace();
         }
 
         String address = addresses.get(0).getAddressLine(0); // the rest
-
+        Log.i("MyPlace", "MyPlace.constructor after addressLine");
         this.city = addresses.get(0).getLocality();
         this.country = addresses.get(0).getCountryName();
         this.streetAddress = addresses.get(0).getAddressLine(0);
         this.address = addresses.get(0);
         this.googlePlaceId = googlePlaceObj.getId();
+
+        Log.i("MyPlace", "MyPlace.constructor end");
     }
 
 
@@ -217,7 +222,7 @@ public class MyPlace implements Serializable
 //            ImageIO.write(eachImage, "png", out); // png is lossless
 //        }
 //    }
-
+//
 //    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 //        in.defaultReadObject();
 //        final int imageCount = in.readInt();

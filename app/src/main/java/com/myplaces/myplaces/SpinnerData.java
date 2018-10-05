@@ -34,10 +34,7 @@ public class SpinnerData {
                 }
             }
         }*/
-
-        categoriesList.add("California");
-        categoriesList.add("Bars");
-        categoriesList.add("Museums");
+        categoriesList.addAll(AppManager.getInstance().getCategoriesList());
 
         spinnerItemId = R.layout.spinner_item;
     }
@@ -88,6 +85,7 @@ public class SpinnerData {
 
                 if(position > 0){
                     // Notify the selected item text
+                    selectedItemStr = selectedItem;
                     Toast.makeText
                             (context, "Selected : " + selectedItem, Toast.LENGTH_SHORT)
                             .show();
