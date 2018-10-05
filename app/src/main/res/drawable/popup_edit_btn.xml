@@ -8,7 +8,7 @@
     <item
         android:state_focused="false"
         android:state_pressed="true"
-        android:drawable="@drawable/ic_mode_edit_black_24dp" />
+        android:drawable="@drawable/ic_edit_main_color_24dp" />
 
     <item android:drawable="@drawable/popup_save_unpressed_btn" />
 

@@ -1,6 +1,7 @@
 package com.myplaces.myplaces;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -11,6 +12,7 @@ import android.util.Log;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -22,8 +24,13 @@ import java.util.Locale;
 public class MyPlace implements Serializable
 {
     private transient Address address;
+    private byte[] mAddressByteArray; // for serialization
 
-    // should be..
+    private transient Bitmap defaultPhoto;
+    private byte[] mImageByteArray; // for serialization
+
+    private transient ArrayList<Bitmap> additionalPhotos;
+
     private String city;
     private String country;
 
@@ -31,9 +38,8 @@ public class MyPlace implements Serializable
 
     private String category;
     private String phoneNumber;
-    private transient Bitmap defaultPhoto;
     private String description;
-    private transient ArrayList<Bitmap> additionalPhotos;
+    private int bitmapArraySize = 0;
     private String webURL;
 
     private String googlePlaceId;
@@ -56,31 +62,26 @@ public class MyPlace implements Serializable
 
     public MyPlace(Place googlePlaceObj, Context ctx)
     {
-        Log.i("MyPlace", "MyPlace.constructor start");
         Geocoder geocoder = new Geocoder(ctx, Locale.getDefault());
         List<Address>addresses = null;
         this.title = googlePlaceObj.getName().toString();
 
         try
         {
-            Log.i("MyPlace", "MyPlace.constructor try");
             addresses = geocoder.getFromLocation(googlePlaceObj.getLatLng().latitude, googlePlaceObj.getLatLng().longitude, 1);
         }
         catch (IOException e)
         {
-            Log.i("MyPlace", "MyPlace.constructor catch");
             e.printStackTrace();
         }
 
         String address = addresses.get(0).getAddressLine(0); // the rest
-        Log.i("MyPlace", "MyPlace.constructor after addressLine");
         this.city = addresses.get(0).getLocality();
         this.country = addresses.get(0).getCountryName();
         this.streetAddress = addresses.get(0).getAddressLine(0);
         this.address = addresses.get(0);
         this.googlePlaceId = googlePlaceObj.getId();
-
-        Log.i("MyPlace", "MyPlace.constructor end");
+        this.additionalPhotos = new ArrayList<>();
     }
 
 
@@ -172,10 +173,13 @@ public class MyPlace implements Serializable
 
     public Bitmap getDefaultPhoto() {
         return defaultPhoto;
+        //return additionalPhotos != null ? additionalPhotos.get(0) : null;
     }
 
     public void setDefaultPhoto(Bitmap defaultPhoto) {
         this.defaultPhoto = defaultPhoto;
+        //additionalPhotos.add(defaultPhoto);
+        //bitmapArraySize = additionalPhotos.size();
     }
 
     public ArrayList<Bitmap> getAdditionalPhotos() {
@@ -196,40 +200,57 @@ public class MyPlace implements Serializable
 
     public ArrayList<Bitmap> GetAllImages()
     {
-        ArrayList<Bitmap> allImages = getAdditionalPhotos();
-        allImages.add(0,defaultPhoto);
-        return allImages;
+        //ArrayList<Bitmap> allImages = getAdditionalPhotos();
+        //allImages.add(0,defaultPhoto);
+        return getAdditionalPhotos();
     }
 
-    // Methods for Serialization
-//    private void writeObject(ObjectOutputStream out) throws IOException{
-//        out.writeObject(title);
-//        out.writeInt(currentWidth);
-//        out.writeInt(currentHeight);
-//
-//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//        currentImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//        BitmapDataObject bitmapDataObject = new BitmapDataObject();
-//        bitmapDataObject.imageByteArray = stream.toByteArray();
-//
-//        out.writeObject(bitmapDataObject);
-//    }
+    protected class BitmapDataObject implements Serializable {
+        private static final long serialVersionUID = 111696345129311948L;
+        public byte[] imageByteArray;
+    }
 
-//    private void writeObject(ObjectOutputStream out) throws IOException {
-//        out.defaultWriteObject();
-//        out.writeInt(additionalPhotos.size()); // how many images are serialized?
-//        for (Bitmap eachImage : additionalPhotos) {
-//            ImageIO.write(eachImage, "png", out); // png is lossless
-//        }
-//    }
-//
-//    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-//        in.defaultReadObject();
-//        final int imageCount = in.readInt();
-//        additionalPhotos = new ArrayList<BufferedImage>(imageCount);
-//        for (int i=0; i<imageCount; i++) {
-//            additionalPhotos.add(ImageIO.read(in));
-//        }
-//    }
+    private void deSerialize() {
+        if (mImageByteArray != null && mImageByteArray.length > 0) {
+            setDefaultPhoto(BitmapFactory.decodeByteArray(mImageByteArray, 0, mImageByteArray.length));
+            mImageByteArray = null;
+        }
+
+        if (mAddressByteArray != null && mAddressByteArray.length > 0) {
+            setAddress(ParcelableUtil.unmarshall(mAddressByteArray, Address.CREATOR));
+            mAddressByteArray = null;
+        }
+    }
+
+    private void toSerializable() {
+        if (getDefaultPhoto() != null) {
+            try {
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                getDefaultPhoto().compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                mImageByteArray = stream.toByteArray();
+
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (getAddress() != null) {
+            mAddressByteArray = ParcelableUtil.marshall(getAddress());
+        }
+
+    }
+
+    /** Included for serialization - write this layer to the output stream. */
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        toSerializable();
+        out.defaultWriteObject();
+    }
+
+    /** Included for serialization - read this object from the supplied input stream. */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
+        in.defaultReadObject();
+        deSerialize();
+    }
 
 }

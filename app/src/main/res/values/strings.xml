@@ -18,4 +18,13 @@
     <string name="more_details">More Details</string>
     <string name="save_place_txt">save place</string>
     <string name="search_address_and_places">Search address and places</string>
+    <string name="place_location">Place Location</string>
+    <string name="title">Title</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="web_site">Web Site</string>
+    <string name="description">Description</string>
+    <string name="place_exist_error">Place with current title already exist</string>
+    <string name="place_saved">New Place Saved</string>
+    <string name="location">Location</string>
+    <string name="untitled">Untitled</string>
 </resources>

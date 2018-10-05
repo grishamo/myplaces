@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class MyPlacesFragment extends Fragment implements IPageFragment
 {
     private GoogleMap mMap;
-    private int mPageIcon = R.drawable.ic_location_on_black_24dp;
+    private int mPageIcon = R.drawable.ic_star_black_24dp;
     private String mTitle = "My Places :)";
     private ListView placesListView;
 

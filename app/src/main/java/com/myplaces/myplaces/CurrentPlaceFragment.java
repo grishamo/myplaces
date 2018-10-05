@@ -1,37 +1,23 @@
 package com.myplaces.myplaces;
 
-import android.content.Context;
 import android.content.Intent;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.net.Uri;
-import android.location.Address;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +29,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
@@ -62,14 +47,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import java.util.Locale;
@@ -105,12 +83,9 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     private TextView mCurrentLocationTextView;
     private TextView mCurrentLocationCountryCity;
     private AppManager mAppMananger = AppManager.getInstance();
+    private SpinnerData mSpinnerData;
 
     Button mSavePlaceBtn;
-    RecyclerView recyclerView;
-    List<MyPlace> myPlacesList;
-    PlaceAdapter placeAdapter;
-    TextView choosenCategoryTv;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -288,36 +263,38 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
 
         locationTv.setText(myPlace.getCity());
         placeTitleTv.setText(myPlace.getTitle());
-        Bitmap defaultImage = myPlace.getDefaultPhoto();
 
-        if (defaultImage != null) {
-            placeImageIv.setImageBitmap(defaultImage);
+        if ( myPlace.getDefaultPhoto() != null) {
+            placeImageIv.setImageBitmap( myPlace.getDefaultPhoto());
         }
 
         Spinner spinner = dialogView.findViewById(R.id.choosen_category_spinner);
-        final SpinnerData spinnerData = new SpinnerData();
-        spinnerData.populate(getContext(), spinner);
+        mSpinnerData = new SpinnerData();
+        mSpinnerData.populate(getContext(), spinner);
 
         final AlertDialog alertDialog = builder.setView(dialogView).show();
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!(mAppMananger.getMyPlaces().contains(myPlace))) {
+                if (!(mAppMananger.isPlaceExist(myPlace))) {
 
-                    String selectedCategory = spinnerData.getSelectedItemStr();
-                    if(selectedCategory != null) {
+                    String selectedCategory = mSpinnerData.getSelectedItemStr();
+                    if (selectedCategory != null) {
                         myPlace.setCategory(selectedCategory);
                         Log.i("ShowSavePlaceDialog", selectedCategory);
                     }
 
-                    AppManager.SetMenuItemss(myPlace);
+                    AppManager.SetMenuItems(myPlace);
                     mAppMananger.getMyPlaces().add(myPlace);
                     mAppMananger.Save(getActivity());
 
                     //Todo: build DataStorage manager, that except any object and save it to defined storage
+                    alertDialog.dismiss();
                 }
-                alertDialog.dismiss();
+                else {
+                    Toast.makeText(getActivity(), getString(R.string.place_exist_error), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -326,15 +303,21 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 Log.i("CurrentPlaceFragmet", "editBtn.setOnClickListener");
-                Intent intent = new Intent(getActivity(), PlaceEditActivity.class);
                 OpenEditPlace();
             }
         });
     }
 
     public void OpenEditPlace() {
+
+        String selectedCategory = mSpinnerData.getSelectedItemStr();
+        if (selectedCategory != null) {
+            myPlace.setCategory(selectedCategory);
+        }
+
         Intent intent = new Intent(getActivity(), PlaceEditActivity.class);
         intent.putExtra("myplace", myPlace);
+        intent.putExtra("action", "create");
         startActivity(intent);
     }
 
@@ -408,7 +391,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
 
     private void BuildGooglePlace(Place place) {
         myPlace = new MyPlace(place, rootView.getContext());
-        getPhotos(myPlace);
+        setPlacePhotos(myPlace);
 
     }
 
@@ -417,7 +400,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     }
 
     // Request photos and metadata for the specified place.
-    private void getPhotos(final MyPlace iMyPlace) {
+    private void setPlacePhotos(final MyPlace iMyPlace) {
         final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(iMyPlace.getGooglePlaceId());
         photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
             @Override
@@ -432,25 +415,25 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                 if (photoMetadataBuffer != null && photoMetadataBuffer.getCount() > 0) {
                     PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
 
-                    if (photoMetadata != null) {
-                        // Get the attribution text.
-                        CharSequence attribution = photoMetadata.getAttributions();
-                        // Get a full-size bitmap for the photo.
-                        Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
 
-                        if (photoResponse != null) {
-                            photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
-                                @Override
-                                public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
-                                    PlacePhotoResponse photo = task.getResult();
-                                    Bitmap bitmap = photo.getBitmap();
-                                    if (bitmap != null) {
-                                        iMyPlace.setDefaultPhoto(bitmap);
-                                    }
-                                }
-                            });
+                    // Get the attribution text.
+                    CharSequence attribution = photoMetadata.getAttributions();
+                    // Get a full-size bitmap for the photo.
+                    Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+
+
+                    photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+                        @Override
+                        public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+                            PlacePhotoResponse photo = task.getResult();
+                            Bitmap bitmap = photo.getBitmap();
+                            if (bitmap != null) {
+                                iMyPlace.setDefaultPhoto(bitmap);
+                            }
                         }
-                    }
+                    });
+
+
                 }
                 assert photoMetadataBuffer != null;
                 photoMetadataBuffer.release();

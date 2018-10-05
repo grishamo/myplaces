@@ -147,22 +147,35 @@ public class AppManager implements Serializable
 
 
     // CHECK FOR DIVIDING VALIDATION AND INSERTION SEPERATELY!
-    public static void SetMenuItemss(MyPlace myPlace)
-    {
-        if(!AppManager.getInstance().getCategoriesList().contains(myPlace.getCategory()))
-        {
+    public static void SetMenuItems(MyPlace myPlace) {
+        if (myPlace.getCategory() != null &&
+                !AppManager.getInstance().getCategoriesList().contains(myPlace.getCategory())) {
             AppManager.getInstance().getCategoriesList().add(myPlace.getCategory());
         }
 
-        if(!AppManager.getInstance().getCitiesList().contains(myPlace.getCity()))
-        {
+        if (!AppManager.getInstance().getCitiesList().contains(myPlace.getCity())) {
             AppManager.getInstance().getCitiesList().add(myPlace.getCity());
         }
 
-        if(!AppManager.getInstance().getCountriesList().contains(myPlace.getCountry()))
-        {
+        if (!AppManager.getInstance().getCountriesList().contains(myPlace.getCountry())) {
             AppManager.getInstance().getCountriesList().add(myPlace.getCountry());
         }
+    }
+
+    public boolean isPlaceExist(MyPlace mPlaceItem) {
+        boolean returnVal = false;
+        //returnVal = getMyPlaces().contains(mPlaceItem);
+
+        for (MyPlace place : getMyPlaces()) {
+            if(
+                mPlaceItem.getTitle().equals(place.getTitle())
+            ){
+                returnVal = true;
+                break;
+            }
+        }
+
+        return returnVal;
     }
 
     // TO BE CONTINUE !

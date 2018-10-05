@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <shape android:shape="oval"
+    android:tint="@color/main_btn"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <stroke android:color="@color/main_btn" android:width="2dp"/>
     <!-- Set the same value for both width and height to get a circular shape -->
-    <solid android:color="#deffffff"/>
     <size android:width="250dp" android:height="250dp"/>
 </shape>

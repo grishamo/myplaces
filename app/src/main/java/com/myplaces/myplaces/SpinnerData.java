@@ -21,25 +21,24 @@ public class SpinnerData {
     private List<String> categoriesList;
     private int spinnerItemId;
     private String selectedItemStr;
+    private Spinner spinner;
+    private AppManager appManager;
 
-    public SpinnerData(){
+    public SpinnerData() {
         categoriesList = new ArrayList<>();
-        categoriesList.add("Select...");
+        appManager = AppManager.getInstance();
+
+        categoriesList.add("Select Category...");
         categoriesList.add("Add New Category");
 
-        /*for (MyPlace myPlace : AppManager.getInstance().getMyPlaces()) {
-            if(myPlace.getCategory() != null) {
-                if (!(categoriesList.contains(myPlace.getCategory()))) {
-                    categoriesList.add(myPlace.getCategory());
-                }
-            }
-        }*/
-        categoriesList.addAll(AppManager.getInstance().getCategoriesList());
+        List<String> existingCategories = appManager.getCategoriesList();
+        categoriesList.addAll(existingCategories);
 
         spinnerItemId = R.layout.spinner_item;
     }
 
-    public void populate(final Context context, Spinner spinnerId){
+    public void populate(final Context context, Spinner spinnerId) {
+        spinner = spinnerId;
         final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(context, spinnerItemId, categoriesList) {
             @Override
             public boolean isEnabled(int position) {
@@ -79,16 +78,12 @@ public class SpinnerData {
 
                 // If user change the default selection
                 // First item is disable and it is used for hint
-                if(selectedItem.equals("Add New Category")){
+                if (selectedItem.equals("Add New Category")) {
                     ShowAddCategoryDialog(context, parent);
                 }
 
-                if(position > 0){
-                    // Notify the selected item text
+                if (position > 0) {
                     selectedItemStr = selectedItem;
-                    Toast.makeText
-                            (context, "Selected : " + selectedItem, Toast.LENGTH_SHORT)
-                            .show();
                 }
             }
 
@@ -99,7 +94,7 @@ public class SpinnerData {
         });
     }
 
-    public void ShowAddCategoryDialog(Context context, final AdapterView<?> parent){
+    public void ShowAddCategoryDialog(Context context, final AdapterView<?> parent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater li = LayoutInflater.from(context);
         View dialogView = li.inflate(R.layout.new_category_dialog, null);
@@ -110,11 +105,15 @@ public class SpinnerData {
             public void onClick(DialogInterface dialog, int which) {
                 String newCategoryStr = newCategoryEt.getText().toString();
 
-                if(!(categoriesList.contains(newCategoryStr))) {
+                if (!(categoriesList.contains(newCategoryStr))) {
                     categoriesList.add(newCategoryStr);
+                    if(!appManager.getCategoriesList().contains(newCategoryStr))
+                    {
+                        appManager.getCategoriesList().add(newCategoryStr);
+                    }
                 }
-                parent.setSelection(categoriesList.size()-1);
-                selectedItemStr =  parent.getSelectedItem().toString();
+                parent.setSelection(categoriesList.size() - 1);
+                selectedItemStr = parent.getSelectedItem().toString();
             }
         }).show();
 
@@ -123,5 +122,14 @@ public class SpinnerData {
 
     public String getSelectedItemStr() {
         return selectedItemStr;
+    }
+
+    public void selectItem(String category) {
+        if (category != null) {
+            int position = categoriesList.indexOf(category);
+            if (position != -1) {
+                spinner.setSelection(position);
+            }
+        }
     }
 }

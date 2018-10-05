@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".PlaceFullyInfoActivity" />
-        <activity android:name=".PlaceEditActivity"></activity>
+        <activity android:name=".PlaceEditActivity" />
     </application>
 
 </manifest>

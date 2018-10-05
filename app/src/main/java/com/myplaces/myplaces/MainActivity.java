@@ -32,9 +32,9 @@ public class MainActivity extends AppCompatActivity
 
 
         // Add Page Fragment to adapter
-        adapter.AddFragment(new MyPlacesFragment())
-                .AddFragment(new CurrentPlaceFragment())
-                .AddFragment(new CurrentPlaceFragment());
+        adapter.AddFragment(new CurrentPlaceFragment())
+                .AddFragment(new MyPlacesFragment());
+
 
         // Set the adapter onto the view pager
         viewPager.setAdapter(adapter);
