@@ -429,7 +429,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                 // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
                 PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
                 // Get the first photo in the list.
-                if (photoMetadataBuffer != null && photoMetadataBuffer.get(0) != null) {
+                if (photoMetadataBuffer != null && photoMetadataBuffer.getCount() > 0) {
                     PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
 
                     if (photoMetadata != null) {
@@ -452,6 +452,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                         }
                     }
                 }
+                assert photoMetadataBuffer != null;
                 photoMetadataBuffer.release();
             }
 
