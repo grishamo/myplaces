@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +23,8 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 
+import java.util.ArrayList;
+
 public class PlaceEditActivity extends AppCompatActivity {
 
     private final String TAG = "PlaceEditActivity";
@@ -33,6 +34,7 @@ public class PlaceEditActivity extends AppCompatActivity {
     private AppManager mAppMananger = AppManager.getInstance();
     private SpinnerData mCategoriesSpinnerObj;
     private String mUserAction;
+    private ArrayList<ImageThumbImageView> mAllImagesThumbs;
 
     private Button mAddressBtn;
     private ImageView mMainImageIv;
@@ -41,7 +43,6 @@ public class PlaceEditActivity extends AppCompatActivity {
     private EditText mPhoneEt;
     private EditText mWebsiteEt;
     private MyPlace mPlaceItem;
-    private ImageView mTakenPictureIv;
     private LinearLayout mImagesLayout;
     private Address mAddress;
     private Spinner mCategoriesSp;
@@ -56,6 +57,7 @@ public class PlaceEditActivity extends AppCompatActivity {
         mUserAction = intent.getStringExtra("action");
 
         setContentView(R.layout.activity_place_edit);
+        mAllImagesThumbs = new ArrayList<>();
 
         // Get XML elements:
         mImagesLayout = findViewById(R.id.images_layout);
@@ -73,7 +75,7 @@ public class PlaceEditActivity extends AppCompatActivity {
     }
 
     private void populateFields() {
-        if(mPlaceItem != null) {
+        if (mPlaceItem != null) {
             mAddress = mPlaceItem.getAddress();
             mTitleEt.setText(mPlaceItem.getTitle());
             mDescriptionEt.setText(mPlaceItem.getDescription());
@@ -82,9 +84,9 @@ public class PlaceEditActivity extends AppCompatActivity {
             mWebsiteEt.setText(mPlaceItem.getWebURL());
 
             Bitmap defaultImage = mPlaceItem.getDefaultPhoto();
-            if(defaultImage != null)
-            {
+            if (defaultImage != null) {
                 mMainImageIv.setImageBitmap(defaultImage);
+                addNewImage(defaultImage);
             }
         }
 
@@ -95,11 +97,11 @@ public class PlaceEditActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_PERMISSION_CAMERA) {
-            super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == REQUEST_PERMISSION_CAMERA) {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            mTakenPictureIv.setImageBitmap(bitmap);
+            addNewImage(bitmap);
         }
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -131,7 +133,7 @@ public class PlaceEditActivity extends AppCompatActivity {
         Drawable drawable = mMainImageIv.getDrawable();
         boolean hasImage = (drawable != null);
         if (hasImage && (drawable instanceof BitmapDrawable)) {
-            Bitmap image = ((BitmapDrawable)drawable).getBitmap();
+            Bitmap image = ((BitmapDrawable) drawable).getBitmap();
             mPlaceItem.setDefaultPhoto(image);
         }
 
@@ -140,8 +142,7 @@ public class PlaceEditActivity extends AppCompatActivity {
             mPlaceItem.setCategory(category);
         }
 
-        if(mUserAction.equals("create"))
-        {
+        if (mUserAction.equals("create")) {
             if (!(mAppMananger.isPlaceExist(mPlaceItem))) {
                 AppManager.SetMenuItems(mPlaceItem);
                 mAppMananger.getMyPlaces().add(mPlaceItem);
@@ -150,8 +151,7 @@ public class PlaceEditActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
-            }
-            else {
+            } else {
                 Toast.makeText(this, getString(R.string.place_exist_error), Toast.LENGTH_SHORT).show();
             }
         }
@@ -172,11 +172,37 @@ public class PlaceEditActivity extends AppCompatActivity {
     public void AddImageBtnClick(View view) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_PERMISSION_CAMERA);
-
-        mTakenPictureIv = new ImageView(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        mTakenPictureIv.setLayoutParams(params);
-        mImagesLayout.addView(mTakenPictureIv, 0);
     }
+
+    private void addNewImage(Bitmap newBitmap) {
+        if (newBitmap != null) {
+            ImageThumbImageView ImageThumb = new ImageThumbImageView(this);
+            ImageThumb.setImageBitmap(newBitmap);
+
+            // Change Main Image on thumb click
+            ImageThumb.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    ImageThumbImageView currentThumb = (ImageThumbImageView)view;
+                    currentThumb.select(true);
+
+                    for(ImageThumbImageView thumb : mAllImagesThumbs) {
+                        if(!currentThumb.equals(thumb)){
+                            thumb.select(false);
+                        }
+                    }
+                    mMainImageIv.setImageBitmap(((BitmapDrawable)currentThumb.getDrawable()).getBitmap());
+                }
+            });
+
+            if(mAllImagesThumbs.size() == 0) {
+                mMainImageIv.setImageBitmap(newBitmap);
+                ImageThumb.select(true);
+            }
+
+            mImagesLayout.addView(ImageThumb);
+            mAllImagesThumbs.add(ImageThumb);
+        }
+    }
+
 }

@@ -4,11 +4,15 @@
         <attr name="fontFace" format="string" />
     </declare-styleable>
 
-<!--    <declare-styleable name="PlaceItemView">
-        <attr name="placeTitle" format="string" localization="suggested" />
-        <attr name="placeDescription" format="string" localization="suggested" />
-        <attr name="placeImage" format="string" />
-        <attr name="placeId" format="integer" />
-    </declare-styleable>-->
+    <declare-styleable name="ImageThumbImageView">
+        <attr name="selected" format="boolean" />
+    </declare-styleable>
+
+    <!--    <declare-styleable name="PlaceItemView">
+            <attr name="placeTitle" format="string" localization="suggested" />
+            <attr name="placeDescription" format="string" localization="suggested" />
+            <attr name="placeImage" format="string" />
+            <attr name="placeId" format="integer" />
+        </declare-styleable>-->
 
 </resources>
