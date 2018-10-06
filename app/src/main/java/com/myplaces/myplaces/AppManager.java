@@ -176,7 +176,7 @@ public class AppManager implements Serializable
         return returnVal;
     }
 
-    public MyPlace getPlaceByTitle(String titleStr) {
+    public MyPlace getPlaceById(String titleStr) {
 
         for (MyPlace place : myPlaces) {
             if( titleStr.equals(place.getTitle())){
@@ -185,6 +185,23 @@ public class AppManager implements Serializable
         }
 
         return  null;
+    }
+
+    public void UpdatePlace(String oldPlaceId, MyPlace mPlaceItem) {
+
+        int oldItemIndex = -1;
+
+        for (MyPlace place : myPlaces) {
+            if( oldPlaceId.equals(place.getTitle())){
+                oldItemIndex = myPlaces.indexOf(place);
+                break;
+            }
+        }
+
+        if(oldItemIndex != -1){
+             myPlaces.set(oldItemIndex, mPlaceItem);
+        }
+
     }
 
     // TO BE CONTINUE !
