@@ -6,31 +6,37 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
-<ImageView
-    android:id="@+id/circle_img"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:layout_centerInParent="true"
-    />
 
     <ImageView
-        android:id="@+id/marker_img"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:id="@+id/circle_iv"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_centerInParent="true"
+        android:src="@drawable/logo_bg_circle"
+        />
+
+
+    <ImageView
+        android:id="@+id/marker_iv"
+        android:layout_width="110dp"
+        android:layout_height="200dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/logo_marker"
         />
 
     <ImageView
-        android:id="@+id/heart_img"
+        android:id="@+id/heart_iv"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerInParent="true"
+        android:src="@drawable/logo_heart"
         />
 
     <LinearLayout
+        android:id="@+id/splash_title"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:layout_below="@+id/circle_img"
+        android:layout_below="@+id/circle_iv"
         android:layout_alignParentStart="true"
         android:orientation="vertical">
 

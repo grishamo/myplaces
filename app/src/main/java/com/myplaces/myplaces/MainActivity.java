@@ -1,5 +1,6 @@
 package com.myplaces.myplaces;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ShowSplashScreen();
         // Find the view pager that will allow the user to swipe between fragments
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
@@ -60,5 +62,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPageScrollStateChanged(int state) {}
         });
+    }
+
+    public void ShowSplashScreen(){
+        Intent intent = new Intent(this, SplashScreenActivity.class);
+        startActivity(intent);
     }
 }
