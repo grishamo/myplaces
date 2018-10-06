@@ -167,15 +167,24 @@ public class AppManager implements Serializable
         //returnVal = getMyPlaces().contains(mPlaceItem);
 
         for (MyPlace place : myPlaces) {
-            if(
-                mPlaceItem.getTitle().equals(place.getTitle())
-            ){
+            if( mPlaceItem.getTitle().equals(place.getTitle()) ){
                 returnVal = true;
                 break;
             }
         }
 
         return returnVal;
+    }
+
+    public MyPlace getPlaceByTitle(String titleStr) {
+
+        for (MyPlace place : myPlaces) {
+            if( titleStr.equals(place.getTitle())){
+                return place;
+            }
+        }
+
+        return  null;
     }
 
     // TO BE CONTINUE !

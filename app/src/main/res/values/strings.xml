@@ -33,4 +33,5 @@
     <string name="your_place_list_is_empty">Your Place List Is Empty</string>
     <string name="address_field_is_empty">Address Field Is Empty</string>
     <string name="title_field_is_empty">Title Field Is Empty</string>
+    <string name="no_category">No Category</string>
 </resources>

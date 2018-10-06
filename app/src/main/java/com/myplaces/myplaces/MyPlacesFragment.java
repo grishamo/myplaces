@@ -68,7 +68,12 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
+                TextView titleTv = view.findViewById(R.id.place_name);
+                String titleStr = titleTv.getText().toString();
+                MyPlace myPlace = AppManager.getInstance().getPlaceByTitle(titleStr);
+
                 Intent placeFullyInfoIntent = new Intent(getActivity(), PlaceFullyInfoActivity.class);
+                placeFullyInfoIntent.putExtra("myplace", myPlace);
                 startActivity(placeFullyInfoIntent);
             }
         });

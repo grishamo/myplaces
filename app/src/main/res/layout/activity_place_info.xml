@@ -1,0 +1,145 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <!--Header-->
+    <include
+        android:id="@+id/Header"
+        layout="@layout/header" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/Header">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/main_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="#d1d1d1"
+                    android:scaleType="centerCrop"
+                    android:onClick="OptionMenuClick"
+                    android:src="@drawable/default_image" />
+
+                <ImageButton
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/options_btn"
+                    android:layout_margin="5dp"
+                    android:background="#c0000000"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_settings_black_24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp">
+
+                <TextView
+                    android:id="@+id/address_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/search_places_background"
+                    android:drawablePadding="5dp"
+                    android:drawableStart="@drawable/ic_location_on_grey_24dp"
+                    android:gravity="center_vertical"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="10dp"
+                    android:text="@string/place_location"
+                    android:textAllCaps="false"
+                    android:textColor="#c1ffffff"
+                    android:textSize="13sp" />
+
+
+                <TextView
+                    android:id="@+id/category"
+                    style="@style/PlaceInfoFormCell"
+                    android:drawableStart="@drawable/ic_format_list_bulleted_black_24dp"
+                    android:hint="@string/no_category" />
+
+
+                <TextView
+                    android:id="@+id/title"
+                    style="@style/PlaceInfoFormCell"
+                    android:drawableStart="@drawable/ic_mode_edit_black_24dp"
+                    android:hint="@string/title" />
+
+                <TextView
+                    android:id="@+id/description"
+                    style="@style/PlaceInfoFormCell"
+                    android:drawableStart="@drawable/ic_subject_black_24dp"
+                    android:hint="@string/description" />
+
+                <TextView
+                    android:id="@+id/phone"
+                    style="@style/PlaceInfoFormCell"
+                    android:drawableStart="@drawable/ic_phone_gray_24dp"
+                    android:hint="@string/phone_number" />
+
+                <TextView
+                    android:id="@+id/website"
+                    style="@style/PlaceInfoFormCell"
+                    android:drawableStart="@drawable/ic_public_gray_24dp"
+                    android:hint="@string/web_site" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10sp"
+        android:background="@drawable/place_info_icons_background"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/call_btn"
+            style="@style/PlaceButtonStyle"
+            android:onClick="CallBtnClick"
+            android:src="@drawable/ic_phone_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/website_btn"
+            style="@style/PlaceButtonStyle"
+            android:onClick="WebsiteBtnClick"
+            android:src="@drawable/ic_public_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/share_btn"
+            style="@style/PlaceButtonStyle"
+            android:onClick="ShareBtnClick"
+            android:src="@drawable/ic_share_blue_24dp" />
+
+        <ImageButton
+            android:id="@+id/navigation_btn"
+            style="@style/PlaceButtonStyle"
+            android:onClick="NavigateBtnClick"
+            android:src="@drawable/ic_near_me_black_24dp" />
+    </LinearLayout>
+
+
+</RelativeLayout>
+    

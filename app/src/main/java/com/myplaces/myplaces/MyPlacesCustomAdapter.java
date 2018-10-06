@@ -39,6 +39,7 @@ MyPlacesCustomAdapter extends BaseAdapter
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+
         if(view == null)
         {
             LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -66,6 +67,11 @@ MyPlacesCustomAdapter extends BaseAdapter
 
 
         return view;
+
+/*        PlaceItemView placeView = new PlaceItemView(context);
+        MyPlace place = places.get(i);
+        placeView.SetPlace(place);
+        return placeView;*/
     }
 }
 
