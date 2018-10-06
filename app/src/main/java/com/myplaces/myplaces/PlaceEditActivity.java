@@ -35,7 +35,7 @@ public class PlaceEditActivity extends AppCompatActivity {
     private SpinnerData mCategoriesSpinnerObj;
     private String mUserAction;
     private ArrayList<ImageThumbImageView> mAllImagesThumbs;
-
+    private String mOldPlaceId;
     private Button mAddressBtn;
     private ImageView mMainImageIv;
     private EditText mTitleEt;
@@ -55,6 +55,7 @@ public class PlaceEditActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mPlaceItem = (MyPlace) intent.getSerializableExtra("myplace");
         mUserAction = intent.getStringExtra("action");
+        mOldPlaceId = mPlaceItem.getTitle();
 
         setContentView(R.layout.activity_place_edit);
         mAllImagesThumbs = new ArrayList<>();
@@ -160,10 +161,10 @@ public class PlaceEditActivity extends AppCompatActivity {
         }
 
         if (mUserAction.equals("create")) {
-            if (!(mAppMananger.isPlaceExist(mPlaceItem))) {
+            if (!(AppManager.getInstance().isPlaceExist(mPlaceItem))) {
                 AppManager.SetMenuItems(mPlaceItem);
-                mAppMananger.getMyPlaces().add(mPlaceItem);
-                mAppMananger.Save(this);
+                AppManager.getInstance().getMyPlaces().add(mPlaceItem);
+                AppManager.getInstance().Save(this);
                 Toast.makeText(this, getString(R.string.place_saved), Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(this, MainActivity.class);
@@ -171,6 +172,14 @@ public class PlaceEditActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, getString(R.string.place_exist_error), Toast.LENGTH_SHORT).show();
             }
+        }
+        else if(mUserAction.equals("edit")) {
+            AppManager.getInstance().UpdatePlace(mOldPlaceId, mPlaceItem);
+            AppManager.getInstance().Save(this);
+            Toast.makeText(this, getString(R.string.place_update), Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
 
     }
