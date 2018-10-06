@@ -27,4 +27,10 @@
     <string name="place_saved">New Place Saved</string>
     <string name="location">Location</string>
     <string name="untitled">Untitled</string>
+    <string name="no_title">No Title</string>
+    <string name="no_description">No Description</string>
+    <string name="no_address">No Address</string>
+    <string name="your_place_list_is_empty">Your Place List Is Empty</string>
+    <string name="address_field_is_empty">Address Field Is Empty</string>
+    <string name="title_field_is_empty">Title Field Is Empty</string>
 </resources>

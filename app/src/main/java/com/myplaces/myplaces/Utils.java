@@ -1,10 +1,20 @@
 package com.myplaces.myplaces;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
+import android.support.annotation.NonNull;
 
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
+import com.google.android.gms.location.places.PlacePhotoResponse;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,4 +33,5 @@ public class Utils {
             return null;
         }
     }
+
 }

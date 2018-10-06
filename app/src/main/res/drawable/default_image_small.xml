@@ -1,0 +1,17 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape
+            android:shape="rectangle">
+            <size android:height="50dp" android:width="50dp" />
+            <solid android:color="#bfbfbf" />
+        </shape>
+    </item>
+
+    <item
+        android:width="40dp"
+        android:height="40dp"
+        android:gravity="center"
+        android:id="@+id/half_overlay"
+        android:drawable="@android:drawable/ic_menu_report_image"
+        />
+</layer-list>

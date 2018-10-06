@@ -166,7 +166,7 @@ public class AppManager implements Serializable
         boolean returnVal = false;
         //returnVal = getMyPlaces().contains(mPlaceItem);
 
-        for (MyPlace place : getMyPlaces()) {
+        for (MyPlace place : myPlaces) {
             if(
                 mPlaceItem.getTitle().equals(place.getTitle())
             ){

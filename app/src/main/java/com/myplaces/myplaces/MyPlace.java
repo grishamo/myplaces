@@ -39,7 +39,6 @@ public class MyPlace implements Serializable
     private String category;
     private String phoneNumber;
     private String description;
-    private int bitmapArraySize = 0;
     private String webURL;
 
     private String googlePlaceId;
@@ -101,7 +100,6 @@ public class MyPlace implements Serializable
         this.description = description;
     }
 
-
     public String getCategory() {
         return category;
     }
@@ -118,18 +116,6 @@ public class MyPlace implements Serializable
         this.phoneNumber = phoneNumber;
     }
 
-//    private void writeObject(java.io.ObjectOutputStream out) throws IOException
-//    {
-//        photo.compress(Bitmap.CompressFormat.JPEG,50, out);
-//        out.defaultWriteObject();
-//    }
-//
-//    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
-//    {
-//        photo = BitmapFactory.decodeStream(in);
-//        in.defaultReadObject();
-//    }
-
     public String getGooglePlaceId() {
         return googlePlaceId;
     }
@@ -145,7 +131,6 @@ public class MyPlace implements Serializable
     public void setStreetAddress(String streetAddress) {
         this.streetAddress = streetAddress;
     }
-
 
     public Address getAddress() {
         return address;

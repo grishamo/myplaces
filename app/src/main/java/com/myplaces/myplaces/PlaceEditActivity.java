@@ -75,6 +75,9 @@ public class PlaceEditActivity extends AppCompatActivity {
     }
 
     private void populateFields() {
+        mCategoriesSpinnerObj = new SpinnerData();
+        mCategoriesSpinnerObj.populate(this, mCategoriesSp);
+
         if (mPlaceItem != null) {
             mAddress = mPlaceItem.getAddress();
             mTitleEt.setText(mPlaceItem.getTitle());
@@ -88,11 +91,10 @@ public class PlaceEditActivity extends AppCompatActivity {
                 mMainImageIv.setImageBitmap(defaultImage);
                 addNewImage(defaultImage);
             }
+
+            mCategoriesSpinnerObj.selectItem(mPlaceItem.getCategory());
         }
 
-        mCategoriesSpinnerObj = new SpinnerData();
-        mCategoriesSpinnerObj.populate(this, mCategoriesSp);
-        mCategoriesSpinnerObj.selectItem(mPlaceItem.getCategory());
     }
 
     @Override
@@ -111,6 +113,10 @@ public class PlaceEditActivity extends AppCompatActivity {
                 assert mAddress != null;
                 mAddressBtn.setText(mAddress.getAddressLine(0));
 
+                if(mPlaceItem == null) {
+                    mPlaceItem = new MyPlace(place, this);
+                }
+
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 // TODO: Handle the error.
@@ -123,6 +129,17 @@ public class PlaceEditActivity extends AppCompatActivity {
     }
 
     public void SaveBtnClick(View view) {
+
+        if(mAddress == null){
+            Toast.makeText(this, getString(R.string.address_field_is_empty), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(mTitleEt.getText().length() == 0){
+            Toast.makeText(this, getString(R.string.title_field_is_empty), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         mPlaceItem.setAddress(mAddress);
         mPlaceItem.setTitle(mTitleEt.getText().toString());
         mPlaceItem.setDescription(mDescriptionEt.getText().toString());

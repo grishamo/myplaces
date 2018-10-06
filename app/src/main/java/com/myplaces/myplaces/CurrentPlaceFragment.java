@@ -277,7 +277,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!(mAppMananger.isPlaceExist(myPlace))) {
+                if (!(AppManager.getInstance().isPlaceExist(myPlace))) {
 
                     String selectedCategory = mSpinnerData.getSelectedItemStr();
                     if (selectedCategory != null) {
@@ -286,8 +286,8 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                     }
 
                     AppManager.SetMenuItems(myPlace);
-                    mAppMananger.getMyPlaces().add(myPlace);
-                    mAppMananger.Save(getActivity());
+                    AppManager.getInstance().getMyPlaces().add(myPlace);
+                    AppManager.getInstance().Save(getActivity());
 
                     //Todo: build DataStorage manager, that except any object and save it to defined storage
                     alertDialog.dismiss();

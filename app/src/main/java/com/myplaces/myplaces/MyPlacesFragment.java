@@ -12,9 +12,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -28,22 +30,18 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
     private String mTitle = "My Places :)";
     private ListView placesListView;
 
-
     private View rootView;
 
     private Button cityBtn;
     private Button categoryBtn;
     private Button countryBtn;
+    private ImageButton addPlaceBtn;
+
+    private TextView emptyListTextview;
 
     private PopupMenu categoryPopupMenu;
     private PopupMenu cityPopupMenu;
     private PopupMenu countryPopupMenu;
-
-    public MyPlacesFragment()
-    {
-        // Required empty public constructor
-    }
-
 
 
     @Override
@@ -56,6 +54,8 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
         cityBtn = rootView.findViewById(R.id.city_btn);
         countryBtn = rootView.findViewById(R.id.country_btn);
         categoryBtn = rootView.findViewById(R.id.category_btn);
+        emptyListTextview = rootView.findViewById(R.id.empty_list_textview);
+        addPlaceBtn = rootView.findViewById(R.id.add_place_btn);
 
         categoryPopupMenu = new PopupMenu(getActivity(), categoryBtn);
         countryPopupMenu = new PopupMenu(getActivity(), countryBtn);
@@ -94,6 +94,14 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
             }
         });
 
+        addPlaceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), PlaceEditActivity.class);
+                intent.putExtra("action", "create");
+                startActivity(intent);
+            }
+        });
         return rootView;
     }
 
@@ -116,8 +124,13 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
     public void PopulatePlacesListView()
     {
         ArrayList<MyPlace> myPlacesArrayList = AppManager.getInstance().getMyPlaces();
-        MyPlacesCustomAdapter mpca = new MyPlacesCustomAdapter(myPlacesArrayList, getActivity());
-        placesListView.setAdapter(mpca);
+        MyPlacesCustomAdapter myPlaceCustomAdapter = new MyPlacesCustomAdapter(myPlacesArrayList, getActivity());
+
+        if(myPlacesArrayList.size() > 0) {
+            emptyListTextview.setVisibility(View.INVISIBLE);
+        }
+
+        placesListView.setAdapter(myPlaceCustomAdapter);
     }
 
     public void PopulateMenuContents()
