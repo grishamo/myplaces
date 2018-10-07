@@ -23,9 +23,10 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/logo_heart"
+            android:id="@+id/cat_anim_iv"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/cat_anim"
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 </LinearLayout>
