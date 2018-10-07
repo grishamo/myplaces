@@ -1,6 +1,8 @@
 package com.myplaces.myplaces;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -9,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -96,6 +99,19 @@ public class PlaceFullyInfoActivity extends AppCompatActivity {
     }
 
     public void ShareBtnClick(View view) {
+
+//        String uri = "geo:" + mPlaceItem.getAddress().getLatitude() + ","
+//                +mPlaceItem.getAddress().getLongitude() + "?q=" + mPlaceItem.getAddress().getLatitude()
+//                + "," + mPlaceItem.getAddress().getLongitude();
+//        startActivity(new Intent(android.content.Intent.ACTION_SEND,
+//                Uri.parse(uri)));
+
+        String uri = "http://maps.google.com/maps?daddr=" + mPlaceItem.getAddress().getLatitude() + "," + mPlaceItem.getAddress().getLongitude();
+
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, uri);
+        startActivity(Intent.createChooser(sharingIntent, "Share in..."));
     }
 
     public void NavigateBtnClick(View view) {

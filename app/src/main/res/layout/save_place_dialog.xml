@@ -79,8 +79,7 @@
             android:layout_height="55dp"
             android:layout_marginStart="70dp"
             android:background="@drawable/popup_share_btn"
-            android:src="@drawable/ic_share_main_color_24dp"
-            android:text="share" />
+            android:src="@drawable/ic_share_main_color_24dp"/>
 
         <Button
             android:id="@+id/save_btn"

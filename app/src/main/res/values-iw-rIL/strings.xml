@@ -4,4 +4,7 @@
     <string name="option_category">קטגוריה</string>
     <string name="option_city">עיר</string>
     <string name="option_country">מדינה</string>
+    <string name="all_word">הכל</string>
+    <string name="sort_btn">מיין</string>
+    <string name="share_text">שתף ב...</string>
 </resources>

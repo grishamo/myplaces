@@ -34,4 +34,7 @@
     <string name="address_field_is_empty">Address Field Is Empty</string>
     <string name="title_field_is_empty">Title Field Is Empty</string>
     <string name="no_category">No Category</string>
+    <string name="all_word">All</string>
+    <string name="sort_btn">Sort</string>
+    <string name="share_text">Share in...</string>
 </resources>

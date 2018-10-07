@@ -1,6 +1,10 @@
 package com.myplaces.myplaces;
 
+import android.app.Application;
 import android.content.Context;
+import android.content.res.Resources;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import java.io.File;
@@ -28,11 +32,14 @@ public class AppManager implements Serializable
     // Constructor
     private AppManager()
     {
+
         myPlaces = new ArrayList<>();
         categoriesList = new ArrayList<>();
         citiesList = new ArrayList<>();
         countriesList = new ArrayList<>();
-
+        categoriesList.add(App.getContext().getResources().getString(R.string.all_word));
+        citiesList.add(App.getContext().getResources().getString(R.string.all_word));
+        countriesList.add(App.getContext().getResources().getString(R.string.all_word));
     }
 
     public static AppManager getInstance()
@@ -121,16 +128,13 @@ public class AppManager implements Serializable
 
             catch (FileNotFoundException e)
             {
-                Toast.makeText(ctx,"NOTHING TO LOAD IDIOT!", Toast.LENGTH_SHORT).show();
             }
             catch (IOException e)
             {
-                Toast.makeText(ctx,"NOTHING TO LOAD IDIOT!", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
             catch (ClassNotFoundException e)
             {
-                Toast.makeText(ctx,"NOTHING TO LOAD IDIOT!", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }
