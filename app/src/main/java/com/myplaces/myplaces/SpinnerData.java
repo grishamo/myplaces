@@ -28,8 +28,8 @@ public class SpinnerData {
         categoriesList = new ArrayList<>();
         appManager = AppManager.getInstance();
 
-        categoriesList.add("Select Category...");
-        categoriesList.add("Add New Category");
+        categoriesList.add(App.getContext().getResources().getString(R.string.selected_category));
+        categoriesList.add(App.getContext().getResources().getString(R.string.new_category));
 
         List<String> existingCategories = appManager.getCategoriesList();
         categoriesList.addAll(existingCategories);

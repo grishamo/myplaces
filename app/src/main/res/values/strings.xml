@@ -44,4 +44,9 @@
     <string name="all_word">All</string>
     <string name="sort_btn">Sort</string>
     <string name="share_text">Share in...</string>
+    <string name="selected_category">Select Category..</string>
+    <string name="new_category">Add New Category</string>
+    <string name="edit">Edit Place</string>
+    <string name="edit_place">Edit Place</string>
+    <string name="remove_place">Remove Place</string>
 </resources>

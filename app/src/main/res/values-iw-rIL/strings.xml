@@ -32,4 +32,13 @@
     <string name="all_word">הכל</string>
     <string name="sort_btn">מיין</string>
     <string name="share_text">שתף ב...</string>
+    <string name="selected_category">Select Category..</string>
+    <string name="edit">Edit Place</string>
+    <string name="edit_place">Edit Place</string>
+    <string name="remove_place">Remove Place</string>
+    <string name="no_location">אין מיקום</string>
+    <string name="no_phone_number">אין מספר טלפון</string>
+    <string name="no_website">אין אתר</string>
+    <string name="place_has_been_removed">המקום הוסר</string>
+    <string name="new_category">הוסף קטגוריה</string>
 </resources>

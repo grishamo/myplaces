@@ -64,8 +64,8 @@ public class PlaceFullyInfoActivity extends AppCompatActivity {
         mOptionsBtn = findViewById(R.id.options_btn);
         mOptionsPopupMenu = new PopupMenu(this, mOptionsBtn);
 
-        mOptionsPopupMenu.getMenu().add("Edit Place");
-        mOptionsPopupMenu.getMenu().add("Remove Place");
+        mOptionsPopupMenu.getMenu().add(getResources().getString(R.string.edit_place));
+        mOptionsPopupMenu.getMenu().add(getResources().getString(R.string.remove_place));
 
         mOptionsPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
