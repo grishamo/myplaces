@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -17,6 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -85,6 +88,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     private TextView mCurrentLocationCountryCity;
     private AppManager mAppMananger = AppManager.getInstance();
     private SpinnerData mSpinnerData;
+    private ImageView mRedHeartIv;
 
     private ImageButton mCurrentLocationBtn;
 
@@ -302,6 +306,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                     AppManager.getInstance().getMyPlaces().add(myPlace);
                     AppManager.getInstance().Save(getActivity());
 
+                    ShowSaveAnimation();
                     //Todo: build DataStorage manager, that except any object and save it to defined storage
                     alertDialog.dismiss();
                 } else {
@@ -417,6 +422,15 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     private void BuildCustomPlace(LatLng locationLatLng) {
         Address address = Utils.GetPlaceAddressByLatLng(getActivity(), locationLatLng);
         myPlace = new MyPlace(address);
+    }
+
+    public void ShowSaveAnimation(){
+        mRedHeartIv = getActivity().findViewById(R.id.red_heard_iv);
+
+        mRedHeartIv.setVisibility(View.VISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.move_heart_anim);
+        mRedHeartIv.startAnimation(animation);
+        mRedHeartIv.setVisibility(View.INVISIBLE);
     }
 
 }

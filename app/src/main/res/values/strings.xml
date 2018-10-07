@@ -39,4 +39,6 @@
     <string name="no_phone_number">No Phone Number</string>
     <string name="no_website">No Website</string>
     <string name="place_has_been_removed">Place Removed</string>
+    <string name="my_places">My Places</string>
+    <string name="save">save</string>
 </resources>

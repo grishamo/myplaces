@@ -182,6 +182,7 @@ public class PlaceEditActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+
     }
 
     public void AddressButtonClick(View view) {

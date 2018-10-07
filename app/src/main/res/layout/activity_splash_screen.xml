@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/splash_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+
+    <ImageView
+        android:id="@+id/circle_iv"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/logo_bg_circle"
+        />
+
+    <ImageView
+        android:id="@+id/marker_iv"
+        android:layout_width="100dp"
+        android:layout_height="190dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/logo_marker"
+        />
+
+    <ImageView
+        android:id="@+id/heart_iv"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/logo_heart" />
+
+    <com.myplaces.myplaces.CustomTextView
+        android:id="@+id/splash_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/circle_iv"
+        android:orientation="vertical"
+        android:text="@string/my_places"
+        android:layout_centerHorizontal="true"
+        android:textSize="70sp"
+        custom:fontFace="fonts/Montez-Regular.ttf"
+        android:layout_marginTop="20dp"
+        android:textColor="#ffffff"/>
+
+</RelativeLayout>
