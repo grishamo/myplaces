@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="10dp"
-        android:text="My Places"
+        android:text="@string/my_places"
         android:textColor="#ffffff"
         android:textSize="30sp"
         custom:fontFace="fonts/Montez-Regular.ttf" />

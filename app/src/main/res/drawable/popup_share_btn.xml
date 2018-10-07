@@ -2,14 +2,16 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_focused="true"
-        android:state_pressed="true"
-        android:drawable="@drawable/ic_share_black_24dp" />
+        android:state_pressed="false"
+        android:drawable="@drawable/circle_shape_icon_background_blue" />
 
     <item
         android:state_focused="false"
         android:state_pressed="true"
-        android:drawable="@drawable/ic_share_black_24dp" />
+        android:drawable="@drawable/circle_shape_icon_background_blue" />
 
     <item android:drawable="@drawable/popup_save_unpressed_btn" />
+
+
 
 </selector>

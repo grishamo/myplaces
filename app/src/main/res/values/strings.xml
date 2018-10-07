@@ -35,4 +35,6 @@
     <string name="title_field_is_empty">Title Field Is Empty</string>
     <string name="no_category">No Category</string>
     <string name="place_update">Place Updated</string>
+    <string name="my_places">My Places</string>
+    <string name="save">save</string>
 </resources>

@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/circle_iv"
         android:orientation="vertical"
-        android:text="My Places"
+        android:text="@string/my_places"
         android:layout_centerHorizontal="true"
         android:textSize="70sp"
         custom:fontFace="fonts/Montez-Regular.ttf"

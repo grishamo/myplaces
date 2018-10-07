@@ -9,7 +9,7 @@
         android:id="@+id/new_category_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Category"
+        android:hint="@string/option_category"
         android:layout_marginTop="20dp"
         />
 

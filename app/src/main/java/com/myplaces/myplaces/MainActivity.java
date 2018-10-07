@@ -22,7 +22,13 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ShowSplashScreen();
+        if(count == 0) {
+            count++;
+            ShowSplashScreen();
+        }
+        ShowCatAnimation();
+
+
         // Find the view pager that will allow the user to swipe between fragments
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
