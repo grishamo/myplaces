@@ -11,8 +11,9 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/search_places_background"
         android:drawableStart="@drawable/zoom_icon"
-        android:paddingEnd="40dp"
-        android:paddingStart="40dp"
+        android:paddingEnd="20dp"
+        android:width="260dp"
+        android:paddingStart="20dp"
         android:text="@string/search_address_and_places"
         android:textAllCaps="false"
         android:textColor="#c1ffffff"
@@ -53,11 +54,13 @@
 
             <TextView
                 android:id="@+id/CurrentLocationAddress"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/edit_icon"
                 android:drawablePadding="10dp"
                 android:textAlignment="center"
+                android:paddingEnd="20dp"
+                android:paddingStart="20dp"
                 android:textSize="17sp" />
 
             <TextView

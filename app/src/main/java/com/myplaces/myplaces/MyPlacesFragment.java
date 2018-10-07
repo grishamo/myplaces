@@ -141,11 +141,11 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
 
                 for(MyPlace place : AppManager.getInstance().getMyPlaces())
                 {
-                    if(chosenCategory == allWord || chosenCategory == categoryWord || chosenCategory == place.getCategory())
+                    if(chosenCategory.equals(allWord) || chosenCategory.equals(categoryWord) || chosenCategory.equals(place.getCategory()))
                     {
-                        if(chosenCountry == allWord || chosenCountry == countryWord || chosenCountry == place.getCountry())
+                        if(chosenCountry.equals(allWord) || chosenCountry.equals(countryWord) || chosenCountry.equals(place.getCountry()))
                         {
-                            if(chosenCity == allWord || chosenCity == cityWord || chosenCity == place.getCity())
+                            if(chosenCity.equals(allWord) || chosenCity.equals(cityWord) || chosenCity.equals(place.getCity()))
                             {
                                 filteredPlaces.add(place);
                             }

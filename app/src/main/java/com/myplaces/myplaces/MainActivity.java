@@ -35,11 +35,11 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if(count == 0) {
-            count++;
-            ShowSplashScreen();
-        }
+//
+//        if(count == 0) {
+//            count++;
+//            ShowSplashScreen();
+//        }
         ShowCatAnimation();
 
 
@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity
 
         super.onResume();
     }
+
 
     @Override
     protected void onPause() {
