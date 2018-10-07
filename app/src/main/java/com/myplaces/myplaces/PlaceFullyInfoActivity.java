@@ -1,11 +1,12 @@
 package com.myplaces.myplaces;
 
 import android.content.Intent;
+import android.location.Address;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -24,8 +25,13 @@ public class PlaceFullyInfoActivity extends AppCompatActivity {
     private TextView mPhone;
     private TextView mWebsite;
 
-    private PopupMenu optionsPopupMenu;
-    private ImageButton optionsBtn;
+    private PopupMenu mOptionsPopupMenu;
+    private ImageButton mOptionsBtn;
+    private ImageButton mNavigationBtn;
+    private ImageButton mShareBtn;
+    private ImageButton mWebsiteBtn;
+    private ImageButton mCallBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,18 +50,23 @@ public class PlaceFullyInfoActivity extends AppCompatActivity {
         mPhone = findViewById(R.id.phone);
         mWebsite = findViewById(R.id.website);
 
+        mNavigationBtn = findViewById(R.id.navigation_btn);
+        mShareBtn = findViewById(R.id.share_btn);
+        mWebsiteBtn = findViewById(R.id.website_btn);
+        mCallBtn = findViewById(R.id.call_btn);
+
         initOptionsMenu();
         populateFields();
     }
 
     private void initOptionsMenu() {
-        optionsBtn = findViewById(R.id.options_btn);
-        optionsPopupMenu = new PopupMenu(this, optionsBtn);
+        mOptionsBtn = findViewById(R.id.options_btn);
+        mOptionsPopupMenu = new PopupMenu(this, mOptionsBtn);
 
-        optionsPopupMenu.getMenu().add("Edit Place");
-        optionsPopupMenu.getMenu().add("Remove Place");
+        mOptionsPopupMenu.getMenu().add("Edit Place");
+        mOptionsPopupMenu.getMenu().add("Remove Place");
 
-        optionsPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        mOptionsPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -63,21 +74,17 @@ public class PlaceFullyInfoActivity extends AppCompatActivity {
                 if (title.equals("Edit Place")) {
                     OpenEditActivity();
                 }
+                if (title.equals("Remove Place")) {
+                    RemovePlace();
+                }
 
                 return true;
             }
         });
     }
 
-    private void OpenEditActivity() {
-        Intent intent = new Intent(this, PlaceEditActivity.class);
-        intent.putExtra("myplace", mPlaceItem);
-        intent.putExtra("action", "edit");
-        startActivity(intent);
-    }
-
     private void populateFields() {
-        if(mPlaceItem.getDefaultPhoto() != null) {
+        if (mPlaceItem.getDefaultPhoto() != null) {
             mPlaceImageView.setImageBitmap(mPlaceItem.getDefaultPhoto());
         }
 
@@ -87,21 +94,66 @@ public class PlaceFullyInfoActivity extends AppCompatActivity {
         mDescription.setText(mPlaceItem.getDescription());
         mPhone.setText(mPlaceItem.getPhoneNumber());
         mWebsite.setText(mPlaceItem.getWebURL());
+
+        //Hide Action button if data not exist
+        if (mPlaceItem.getPhoneNumber() == null || mPlaceItem.getPhoneNumber().length() == 0) {
+            mCallBtn.setVisibility(View.GONE);
+        }
+        if (mPlaceItem.getWebURL() == null || mPlaceItem.getWebURL().length() == 0) {
+            mWebsiteBtn.setVisibility(View.GONE);
+        }
+
+    }
+
+    private void RemovePlace() {
+        AppManager.getInstance().RemovePlaceById(mPlaceItem.getTitle());
+        AppManager.getInstance().Save(this);
+
+        Toast.makeText(this, getString(R.string.place_has_been_removed), Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private void OpenEditActivity() {
+        Intent intent = new Intent(this, PlaceEditActivity.class);
+        intent.putExtra("myplace", mPlaceItem);
+        intent.putExtra("action", "edit");
+        startActivity(intent);
     }
 
     public void CallBtnClick(View view) {
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        callIntent.setData(Uri.parse("tel:" + mPlaceItem.getPhoneNumber()));
+        startActivity(callIntent);
     }
 
     public void WebsiteBtnClick(View view) {
+        String url = mPlaceItem.getWebURL();
+
+        if (!url.startsWith("http://") && !url.startsWith("https://"))
+            url = "http://" + url;
+
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(browserIntent);
     }
 
     public void ShareBtnClick(View view) {
     }
 
     public void NavigateBtnClick(View view) {
+        Intent navigateIntent = new Intent(Intent.ACTION_VIEW);
+        Address address = mPlaceItem.getAddress();
+        String addressLine = address.getAddressLine(0);
+        double latitude = address.getLatitude();
+        double longitude = address.getLongitude();
+
+        navigateIntent.setData(Uri.parse("geo:" + latitude + "," + longitude + "?q=" + addressLine));
+        startActivity(navigateIntent);
     }
 
     public void OptionMenuClick(View view) {
-        optionsPopupMenu.show();
+        mOptionsPopupMenu.show();
     }
+
 }

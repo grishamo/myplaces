@@ -31,7 +31,6 @@ public class PlaceEditActivity extends AppCompatActivity {
     private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private final int REQUEST_PERMISSION_CAMERA = 2;
 
-    private AppManager mAppMananger = AppManager.getInstance();
     private SpinnerData mCategoriesSpinnerObj;
     private String mUserAction;
     private ArrayList<ImageThumbImageView> mAllImagesThumbs;
@@ -55,7 +54,7 @@ public class PlaceEditActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mPlaceItem = (MyPlace) intent.getSerializableExtra("myplace");
         mUserAction = intent.getStringExtra("action");
-        mOldPlaceId = mPlaceItem.getTitle();
+        mOldPlaceId = mPlaceItem != null ? mPlaceItem.getTitle() : null;
 
         setContentView(R.layout.activity_place_edit);
         mAllImagesThumbs = new ArrayList<>();
@@ -92,6 +91,7 @@ public class PlaceEditActivity extends AppCompatActivity {
                 mMainImageIv.setImageBitmap(defaultImage);
                 addNewImage(defaultImage);
             }
+
 
             mCategoriesSpinnerObj.selectItem(mPlaceItem.getCategory());
         }

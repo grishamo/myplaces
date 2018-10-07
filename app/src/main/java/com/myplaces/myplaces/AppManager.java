@@ -204,6 +204,21 @@ public class AppManager implements Serializable
 
     }
 
+    public void RemovePlaceById(String placeId) {
+        int index = -1;
+
+        for (MyPlace place : myPlaces) {
+            if( placeId.equals(place.getTitle())){
+                index = myPlaces.indexOf(place);
+                break;
+            }
+        }
+
+        if(index != -1){
+            myPlaces.remove(index);
+        }
+    }
+
     // TO BE CONTINUE !
 //    public static void checkMyPlaceObjectDuplicateBeforeInsertion(MyPlace myPlace)
 //    {

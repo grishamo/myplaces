@@ -8,7 +8,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -70,7 +72,6 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
     private Geocoder geocoder;
-    private GeoDataClient mGeoDataClient;
     private Location mLastKnownLocation;
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private Marker placeMarker;
@@ -85,6 +86,8 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     private AppManager mAppMananger = AppManager.getInstance();
     private SpinnerData mSpinnerData;
 
+    private ImageButton mCurrentLocationBtn;
+
     Button mSavePlaceBtn;
 
     @Override
@@ -95,6 +98,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         mCurrentLocationTextView = rootView.findViewById(R.id.CurrentLocationAddress);
         mCurrentLocationCountryCity = rootView.findViewById(R.id.CurrentLocationCountryCity);
+        mCurrentLocationBtn = rootView.findViewById(R.id.currentLocationBtn);
 
         geocoder = new Geocoder(getContext(), Locale.getDefault());
 
@@ -102,12 +106,26 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mGeoDataClient = Places.getGeoDataClient(getActivity(), null);
-
         initSearchPlaceBtn();
         initSavePlaceBtn();
+        initCurrentLocationBtn();
 
         return rootView;
+    }
+
+    private void initCurrentLocationBtn() {
+        mCurrentLocationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mLastKnownLocation != null) {
+                    LatLng locationLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                    BuildCustomPlace(locationLatLng);
+                    SetCurrentLocationText(locationLatLng);
+                    ChangeMarkerPosition(locationLatLng);
+                    ChangeCameraPosition(locationLatLng);
+                }
+            }
+        });
     }
 
     private void initSavePlaceBtn() {
@@ -189,7 +207,6 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                         LatLng locationLatLng;
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
-                            mMap.getUiSettings().setMyLocationButtonEnabled(true);
                             mLastKnownLocation = task.getResult();
                             locationLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                         } else {
@@ -197,11 +214,10 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
                             Log.e(mTitle, "Exception: %s", task.getException());
 
                             locationLatLng = mDefaultLocation;
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
 
                         BuildCustomPlace(locationLatLng);
-                        SetCurrentLocationText(getPlaceAddress(locationLatLng));
+                        SetCurrentLocationText(locationLatLng);
                         SetMarkerPosition(locationLatLng);
                         ChangeCameraPosition(locationLatLng);
                     }
@@ -229,8 +245,9 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         });
     }
 
-    private void SetCurrentLocationText(Address address) {
-        if (address != null) {
+    private void SetCurrentLocationText(LatLng latLng) {
+        if (latLng != null) {
+            Address address = Utils.GetPlaceAddressByLatLng(getActivity(), latLng);
             String fullAddress = address.getAddressLine(0);
             String city = address.getLocality();
             String country = address.getCountryName();
@@ -240,17 +257,13 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         }
     }
 
-    private Address getPlaceAddress(LatLng latLng) {
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-            return addresses.get(0);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public void ShowSavePlaceDialog() {
+
+        if(mLastKnownLocation == null) {
+            getDeviceLocation();
+            return;
+        }
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         final View dialogView = getLayoutInflater().inflate(R.layout.save_place_dialog, null);
@@ -264,8 +277,8 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         locationTv.setText(myPlace.getCity());
         placeTitleTv.setText(myPlace.getTitle());
 
-        if ( myPlace.getDefaultPhoto() != null) {
-            placeImageIv.setImageBitmap( myPlace.getDefaultPhoto());
+        if (myPlace.getDefaultPhoto() != null) {
+            placeImageIv.setImageBitmap(myPlace.getDefaultPhoto());
         }
 
         Spinner spinner = dialogView.findViewById(R.id.choosen_category_spinner);
@@ -291,13 +304,11 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
 
                     //Todo: build DataStorage manager, that except any object and save it to defined storage
                     alertDialog.dismiss();
-                }
-                else {
+                } else {
                     Toast.makeText(getActivity(), getString(R.string.place_exist_error), Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
 
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -309,7 +320,6 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     }
 
     public void OpenEditPlace() {
-
         String selectedCategory = mSpinnerData.getSelectedItemStr();
         if (selectedCategory != null) {
             myPlace.setCategory(selectedCategory);
@@ -347,13 +357,24 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setIndoorEnabled(false);
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                BuildCustomPlace(latLng);
+                SetCurrentLocationText(latLng);
+                ChangeMarkerPosition(latLng);
+                ChangeCameraPosition(latLng);
+            }
+        });
+
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
-
     }
+
 
     @Override
     public int GetPageIcon() {
@@ -374,7 +395,7 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(rootView.getContext(), data);
-                SetCurrentLocationText(getPlaceAddress(place.getLatLng()));
+                SetCurrentLocationText(place.getLatLng());
                 ChangeMarkerPosition(place.getLatLng());
                 Log.i(mTitle, "Place: " + place.getAddress());
                 BuildGooglePlace(place);
@@ -391,56 +412,11 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
 
     private void BuildGooglePlace(Place place) {
         myPlace = new MyPlace(place, rootView.getContext());
-        setPlacePhotos(myPlace);
-
     }
 
     private void BuildCustomPlace(LatLng locationLatLng) {
-        myPlace = new MyPlace(getPlaceAddress(locationLatLng));
+        Address address = Utils.GetPlaceAddressByLatLng(getActivity(), locationLatLng);
+        myPlace = new MyPlace(address);
     }
-
-    // Request photos and metadata for the specified place.
-    private void setPlacePhotos(final MyPlace iMyPlace) {
-        final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(iMyPlace.getGooglePlaceId());
-        photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
-            @Override
-            public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
-
-                // Get the list of photos.
-                PlacePhotoMetadataResponse photos = task.getResult();
-
-                // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
-                PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
-                // Get the first photo in the list.
-                if (photoMetadataBuffer != null && photoMetadataBuffer.getCount() > 0) {
-                    PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
-
-
-                    // Get the attribution text.
-                    CharSequence attribution = photoMetadata.getAttributions();
-                    // Get a full-size bitmap for the photo.
-                    Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
-
-
-                    photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
-                        @Override
-                        public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
-                            PlacePhotoResponse photo = task.getResult();
-                            Bitmap bitmap = photo.getBitmap();
-                            if (bitmap != null) {
-                                iMyPlace.setDefaultPhoto(bitmap);
-                            }
-                        }
-                    });
-
-
-                }
-                assert photoMetadataBuffer != null;
-                photoMetadataBuffer.release();
-            }
-
-        });
-    }
-
 
 }

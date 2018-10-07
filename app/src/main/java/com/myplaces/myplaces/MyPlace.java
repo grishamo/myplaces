@@ -7,10 +7,19 @@ import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
+import com.google.android.gms.location.places.PlacePhotoResponse;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,6 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class MyPlace implements Serializable
 {
@@ -30,6 +40,9 @@ public class MyPlace implements Serializable
     private byte[] mImageByteArray; // for serialization
 
     private transient ArrayList<Bitmap> additionalPhotos;
+    private List<byte[]> mAdditionalPhotosBytesArray;
+
+    private transient GeoDataClient mGeoDataClient;
 
     private String city;
     private String country;
@@ -43,7 +56,6 @@ public class MyPlace implements Serializable
 
     private String googlePlaceId;
     private String title;
-    // prive DateTime date;
 
 
     public MyPlace(Address address)
@@ -57,30 +69,39 @@ public class MyPlace implements Serializable
         this.title = address.getAddressLine(0);
         this.phoneNumber = address.getPhone();
         this.webURL = address.getUrl();
+
+        this.additionalPhotos = new ArrayList<>();
+        this.mAdditionalPhotosBytesArray = new ArrayList<>();
+
     }
 
     public MyPlace(Place googlePlaceObj, Context ctx)
     {
-        Geocoder geocoder = new Geocoder(ctx, Locale.getDefault());
-        List<Address>addresses = null;
-        this.title = googlePlaceObj.getName().toString();
 
         try
         {
-            addresses = geocoder.getFromLocation(googlePlaceObj.getLatLng().latitude, googlePlaceObj.getLatLng().longitude, 1);
+            this.address = Utils.GetPlaceAddressByLatLng(ctx, googlePlaceObj.getLatLng());
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
 
-        String address = addresses.get(0).getAddressLine(0); // the rest
-        this.city = addresses.get(0).getLocality();
-        this.country = addresses.get(0).getCountryName();
-        this.streetAddress = addresses.get(0).getAddressLine(0);
-        this.address = addresses.get(0);
+        mGeoDataClient = Places.getGeoDataClient(ctx, null);
+
+        this.title = googlePlaceObj.getName().toString();
+
+        this.city = this.address.getLocality();
+        this.country = this.address.getCountryName();
+        this.streetAddress = this.address.getAddressLine(0);
         this.googlePlaceId = googlePlaceObj.getId();
+        this.phoneNumber = googlePlaceObj.getPhoneNumber() != null ? googlePlaceObj.getPhoneNumber().toString() : null;
+        this.webURL = googlePlaceObj.getWebsiteUri() != null ? googlePlaceObj.getWebsiteUri().toString() : null;
+
         this.additionalPhotos = new ArrayList<>();
+        this.mAdditionalPhotosBytesArray = new ArrayList<>();
+
+        setGooglePlacePhoto(this.googlePlaceId);
     }
 
 
@@ -158,21 +179,14 @@ public class MyPlace implements Serializable
 
     public Bitmap getDefaultPhoto() {
         return defaultPhoto;
-        //return additionalPhotos != null ? additionalPhotos.get(0) : null;
     }
 
     public void setDefaultPhoto(Bitmap defaultPhoto) {
         this.defaultPhoto = defaultPhoto;
-        //additionalPhotos.add(defaultPhoto);
-        //bitmapArraySize = additionalPhotos.size();
     }
 
     public ArrayList<Bitmap> getAdditionalPhotos() {
         return additionalPhotos;
-    }
-
-    public void setAdditionalPhotos(ArrayList<Bitmap> additionalPhotos) {
-        this.additionalPhotos = additionalPhotos;
     }
 
     public String getWebURL() {
@@ -183,16 +197,46 @@ public class MyPlace implements Serializable
         this.webURL = webURL;
     }
 
-    public ArrayList<Bitmap> GetAllImages()
-    {
-        //ArrayList<Bitmap> allImages = getAdditionalPhotos();
-        //allImages.add(0,defaultPhoto);
-        return getAdditionalPhotos();
-    }
+    private void setGooglePlacePhoto(String googleId) {
+        final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(googleId);
+        photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
 
-    protected class BitmapDataObject implements Serializable {
-        private static final long serialVersionUID = 111696345129311948L;
-        public byte[] imageByteArray;
+                // Get the list of photos.
+                PlacePhotoMetadataResponse photos = task.getResult();
+
+                // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
+                PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                // Get the first photo in the list.
+                if (photoMetadataBuffer != null && photoMetadataBuffer.getCount() > 0) {
+                    PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
+
+
+                    // Get the attribution text.
+                    CharSequence attribution = photoMetadata.getAttributions();
+                    // Get a full-size bitmap for the photo.
+                    Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+
+
+                    photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+                        @Override
+                        public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+                            PlacePhotoResponse photo = task.getResult();
+                            Bitmap bitmap = photo.getBitmap();
+                            if (bitmap != null) {
+                                defaultPhoto = bitmap;
+                            }
+                        }
+                    });
+
+
+                }
+                assert photoMetadataBuffer != null;
+                photoMetadataBuffer.release();
+            }
+
+        });
     }
 
     private void deSerialize() {
