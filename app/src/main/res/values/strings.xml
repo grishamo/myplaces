@@ -41,4 +41,7 @@
     <string name="place_has_been_removed">Place Removed</string>
     <string name="my_places">My Places</string>
     <string name="save">save</string>
+    <string name="all_word">All</string>
+    <string name="sort_btn">Sort</string>
+    <string name="share_text">Share in...</string>
 </resources>

@@ -29,4 +29,7 @@
     <string name="no_category">אין קטגוריה</string>
     <string name="place_update">המקום עודכן</string>
     <string name="save">שמור</string>
+    <string name="all_word">הכל</string>
+    <string name="sort_btn">מיין</string>
+    <string name="share_text">שתף ב...</string>
 </resources>

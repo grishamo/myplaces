@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,6 +31,8 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
     private Button cityBtn;
     private Button categoryBtn;
     private Button countryBtn;
+    private ImageButton sortBtn;
+
     private ImageButton addPlaceBtn;
 
     private TextView emptyListTextview;
@@ -37,6 +40,8 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
     private PopupMenu categoryPopupMenu;
     private PopupMenu cityPopupMenu;
     private PopupMenu countryPopupMenu;
+
+    private ArrayList<MyPlace> filteredPlaces = new ArrayList<>();
 
 
     @Override
@@ -51,11 +56,11 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
         categoryBtn = rootView.findViewById(R.id.category_btn);
         emptyListTextview = rootView.findViewById(R.id.empty_list_textview);
         addPlaceBtn = rootView.findViewById(R.id.add_place_btn);
-
+        sortBtn = rootView.findViewById(R.id.sort_btn);
         categoryPopupMenu = new PopupMenu(getActivity(), categoryBtn);
         countryPopupMenu = new PopupMenu(getActivity(), countryBtn);
         cityPopupMenu = new PopupMenu(getActivity(), cityBtn);
-        
+
         PopulatePlacesListView();
         PopulateMenuContents();
 
@@ -93,6 +98,69 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
                 categoryPopupMenu.show();
             }
         });
+
+        categoryPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                categoryBtn.setText(menuItem.getTitle().toString());
+                return false;
+            }
+        });
+
+        cityPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                cityBtn.setText(menuItem.getTitle().toString());
+                return false;
+            }
+        });
+
+        countryPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                countryBtn.setText(menuItem.getTitle().toString());
+                return false;
+            }
+        });
+
+        sortBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+
+                filteredPlaces.clear();
+
+                String allWord = getText(R.string.all_word).toString();
+                String categoryWord = getText(R.string.option_category).toString();
+                String cityWord = getText(R.string.option_city).toString();
+                String countryWord = getText(R.string.option_country).toString();
+
+                String chosenCategory = categoryBtn.getText().toString();
+                String chosenCity = cityBtn.getText().toString();
+                String chosenCountry = countryBtn.getText().toString();
+
+                for(MyPlace place : AppManager.getInstance().getMyPlaces())
+                {
+                    if(chosenCategory == allWord || chosenCategory == categoryWord || chosenCategory == place.getCategory())
+                    {
+                        if(chosenCountry == allWord || chosenCountry == countryWord || chosenCountry == place.getCountry())
+                        {
+                            if(chosenCity == allWord || chosenCity == cityWord || chosenCity == place.getCity())
+                            {
+                                filteredPlaces.add(place);
+                            }
+                        }
+                    }
+                }
+                PopulateFilteredPlaces();
+            }
+
+
+        });
+
+
+
+
 
         addPlaceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,6 +234,18 @@ public class MyPlacesFragment extends Fragment implements IPageFragment
             }
         }
 
+
+        categoryBtn.setText(getText(R.string.option_category).toString());
+        cityBtn.setText(getText(R.string.option_city).toString());
+        countryBtn.setText(getText(R.string.option_country).toString());
+    }
+
+    public void PopulateFilteredPlaces()
+    {
+        MyPlacesCustomAdapter myPlaceCustomAdapter = new MyPlacesCustomAdapter(filteredPlaces, getActivity());
+        placesListView.setAdapter(myPlaceCustomAdapter);
     }
 
 }
+
+

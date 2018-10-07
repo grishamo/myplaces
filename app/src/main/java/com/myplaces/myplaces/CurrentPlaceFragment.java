@@ -291,6 +291,18 @@ public class CurrentPlaceFragment extends Fragment implements OnMapReadyCallback
 
         final AlertDialog alertDialog = builder.setView(dialogView).show();
 
+        shareBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String uri = "http://maps.google.com/maps?daddr=" + myPlace.getAddress().getLatitude() + "," + myPlace.getAddress().getLongitude();
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, uri);
+                startActivity(Intent.createChooser(sharingIntent, "Share in..."));
+            }
+        });
+
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
